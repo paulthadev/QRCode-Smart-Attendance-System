@@ -1,12 +1,31 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import RegisterLecturer from "./page/RegisterLecturer";
+import LoginLecturer from "./page/LoginLecturer";
+import ClassSchedule from "./page/ClassSchedule";
+import LandingPage from "./page/LandingPage";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+    index: true,
+  },
+  {
+    path: "/registerLecturer",
+    element: <RegisterLecturer />,
+  },
+  {
+    path: "/loginLecturer",
+    element: <LoginLecturer />,
+  },
+  {
+    path: "/classSchedule",
+    element: <ClassSchedule />,
+  },
+]);
+
 function App() {
-  return (
-    <div className="flex h-screen justify-center items-center">
-      <div className="bg-gray-800 text-white p-12 rounded-lg shadow-lg items-center flex flex-col gap-2">
-        <h1 className="text-secondary font-bold">Hello</h1>
-        <button className="btn btn-primary">Button</button>
-      </div>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
