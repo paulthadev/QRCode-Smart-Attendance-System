@@ -3,6 +3,7 @@ import { supabase } from "../utils/supabaseClient";
 import Input from "../component/Input";
 import Logo from "/trackAS.png";
 import registerImg from "/registerImg.jpg";
+import { useNavigate } from "react-router-dom";
 
 const RegisterLecturer = () => {
   const [fullName, setFullName] = useState("");
@@ -11,6 +12,8 @@ const RegisterLecturer = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -29,28 +32,32 @@ const RegisterLecturer = () => {
     }
 
     try {
-      // Sign up lecturer using Supabase authentication with email confirmation
-      const { data, error } = await supabase.auth.signUp({
+      // Sign up lecturer without email verification
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            full_name: fullName,
-            phone_number: phoneNumber,
-          },
-        },
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
 
-      console.log("Auth signup successful:", data);
+      console.log("Auth signup successful:", authData);
 
-      // Email verification is handled by Supabase, so we don't need to insert data manually
-      // The user data will be available in auth.users table
+      // After successful signup, insert lecturer details into a custom 'lecturers' table
+      const { data: insertData, error: insertError } = await supabase
+        .from("lecturers")
+        .insert({
+          full_name: fullName,
+          email,
+          phone_number: phoneNumber,
+          user_id: authData.user.id, // Store the user ID from the Supabase auth response
+        });
 
-      alert(
-        "Registration successful! Please check your email to verify your account."
-      );
+      if (insertError) throw insertError;
+
+      console.log("Lecturer added to database:", insertData);
+
+      alert("Registration successful!");
+      navigate("/loginLecturer");
     } catch (error) {
       console.error("Registration error:", error);
       alert(error.message);
