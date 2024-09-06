@@ -2,10 +2,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RegisterLecturer from "./page/RegisterLecturer";
 import LoginLecturer from "./page/LoginLecturer";
 import ClassSchedule from "./page/ClassSchedule";
+import EmailVerification from "./component/EmailVerification";
 
 const router = createBrowserRouter([
   {
-    path: "/registerLecturer",
+    path: "/",
     element: <RegisterLecturer />,
   },
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/classSchedule",
     element: <ClassSchedule />,
+  },
+  {
+    path: "/auth/v1/verify",
+    element: <EmailVerification />,
   },
 ]);
 

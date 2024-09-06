@@ -1,4 +1,5 @@
-const Input = ({ label, type, placeholder, onchange }) => {
+/* eslint-disable react/prop-types */
+const Input = ({ label, type, placeholder, onChange }) => {
   return (
     <div className="form-control">
       <label htmlFor="" className="label">
@@ -8,7 +9,7 @@ const Input = ({ label, type, placeholder, onchange }) => {
       </label>
       <input
         type={type}
-        onChange={onchange}
+        onChange={onChange}
         required
         placeholder={placeholder}
         className="input bg-white w-[100%] text-black border-black border-[1px] focus:border-black  rounded-[0.375rem]"
