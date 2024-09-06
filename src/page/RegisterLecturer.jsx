@@ -46,7 +46,7 @@ const RegisterLecturer = () => {
       const { data: insertData, error: insertError } = await supabase
         .from("lecturers")
         .insert({
-          name: fullName,
+          fullName,
           email,
           phone_number: phoneNumber,
         });
