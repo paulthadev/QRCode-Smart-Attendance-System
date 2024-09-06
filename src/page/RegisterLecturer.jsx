@@ -46,10 +46,9 @@ const RegisterLecturer = () => {
       const { data: insertData, error: insertError } = await supabase
         .from("lecturers")
         .insert({
-          full_name: fullName,
+          name: fullName,
           email,
           phone_number: phoneNumber,
-          user_id: authData.user.id, // Store the user ID from the Supabase auth response
         });
 
       if (insertError) throw insertError;
