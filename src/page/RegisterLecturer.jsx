@@ -1,6 +1,7 @@
 import Input from "../component/Input";
 import Logo from "/trackAS.png";
 import registerImg from "/registerImg.jpg";
+import { Link } from "react-router-dom";
 
 const RegisterLecturer = () => {
   return (
@@ -51,7 +52,26 @@ const RegisterLecturer = () => {
           <button className="btn bg-[#000D46] font-bold text-base text-white btn-block mt-4">
             Create Account
           </button>
-          <div></div>
+          <div>
+            <div className="flex mt-6 items-center gap-3 justify-center">
+              <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
+              <p className="text-[#1E1E1E]">login with</p>
+              <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
+            </div>
+
+            <button className="btn bg-white btn-block mt-6 text-black hover:bg-transparent">
+              Continue with Google
+            </button>
+            <p className="mt-4 text-[#1E1E1E] text-center">
+              Already have an Account?{" "}
+              <Link
+                className="text-[#000D46] font-semibold"
+                to={"/loginLecturer"}
+              >
+                Login
+              </Link>
+            </p>
+          </div>
         </form>
         <div className=" max-[100%]  hidden md:block">
           <img
