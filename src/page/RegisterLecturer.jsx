@@ -43,11 +43,11 @@ const RegisterLecturer = () => {
               placeholder={"Enter your phone number"}
               label={"Phone Number"}
             />
-            <Input
+            {/* <Input
               type={"number"}
               placeholder={"Enter your lecturer identification number"}
               label={"Lecturer ID"}
-            />
+            /> */}
           </div>
           <button className="btn bg-[#000D46] font-bold text-base text-white btn-block mt-4">
             Create Account
