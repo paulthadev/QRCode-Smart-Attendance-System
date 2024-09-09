@@ -3,6 +3,7 @@ import RegisterLecturer from "./page/RegisterLecturer";
 import LoginLecturer from "./page/LoginLecturer";
 import ClassSchedule from "./page/ClassSchedule";
 import LandingPage from "./page/LandingPage";
+import StudentLogin from "./page/StudentLogin";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/registerLecturer",
     element: <RegisterLecturer />,
+  },
+  {
+    path: "/studentLogin",
+    element: <StudentLogin />,
   },
   {
     path: "/loginLecturer",
