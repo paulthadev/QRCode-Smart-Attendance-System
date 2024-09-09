@@ -17,13 +17,20 @@ const ClassSchedule = () => {
     setformData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // console.log(formData.time);
+  const onFocus = () => {
+    console.log("Focused");
+  };
+
+  const handelSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
 
   return (
     <section>
       <div className="grid md:grid-cols-2">
         <form
-          action=""
+          onSubmit={handelSubmit}
           className="px-6 lg:px-[133px] overflow-scroll h-[100vh]"
         >
           <img src="/trackAS.png" alt="logo" className="my-24" />
@@ -51,6 +58,7 @@ const ClassSchedule = () => {
               label="Lecture Venue"
               name="lectureVenue"
               type="text"
+              onFocus={onFocus}
               placeholder="Enter the venue for lecture"
               onChange={handleInputChange}
               value={formData.lectureVenue}
