@@ -18,6 +18,7 @@ const MapModal = ({
   setSelectedLocationCordinate,
   selectedLocationName,
   setSelectedLocationName,
+  onChange,
 }) => {
   const [loadingAddress, setLoadingAddress] = useState(false);
   const markerRef = useRef(null); // Create a ref to the marker
@@ -31,6 +32,7 @@ const MapModal = ({
       );
       const address = response.data.display_name;
       setSelectedLocationName(address);
+      onChange(address); // Call onChange with the address
     } catch (error) {
       console.error("Error with reverse geocoding:", error);
     } finally {
@@ -101,7 +103,7 @@ const MapModal = ({
         <div className="relative top-0 left-0 w-full h-[550px]">
           <MapContainer
             center={[7.3056, 5.1357]}
-            zoom={15}
+            zoom={20}
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer
