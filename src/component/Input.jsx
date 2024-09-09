@@ -9,6 +9,7 @@ const Input = ({
   value,
   name,
   MapModal,
+  defaultValue,
 }) => {
   return (
     <div className="form-control">
@@ -33,6 +34,7 @@ const Input = ({
           type={type}
           onChange={onChange}
           value={value}
+          defaultValue={defaultValue}
           required
           placeholder={placeholder}
           className="input bg-white w-[100%] text-black border-black border-[1px] focus:border-black rounded-[0.375rem] pr-12"

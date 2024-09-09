@@ -7,11 +7,20 @@ const ClassSchedule = () => {
   // Get user details from the custom hook
   const { userDetails } = useUserDetails();
 
+  // State to hold selected location
+  const [selectedLocationCordinate, setSelectedLocationCordinate] =
+    useState("");
+  const [selectedLocationName, setSelectedLocationName] = useState("");
+
+  console.log(selectedLocation);
+
   // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: "",
+    lectureVenue: selectedLocation
+      ? `${selectedLocation.lat}, ${selectedLocation.lng}`
+      : "", // Set default value to selected location
     time: "",
     date: "",
     note: "",
@@ -19,10 +28,6 @@ const ClassSchedule = () => {
 
   // State to hold modal open/close
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // State to hold selected location
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  console.log(selectedLocation);
 
   // Function to open the modal
   const openModal = () => {
@@ -89,18 +94,20 @@ const ClassSchedule = () => {
               label="Lecture Venue"
               name="lectureVenue"
               type="text"
-              placeholder="Enter the venue for lecture"
-              onChange={handleInputChange}
-              value={formData.lectureVenue}
-              MapModal={openModal} // Open the modal
+              value={selectedLocationCordinate}
+              MapModal={openModal}
+              readOnly
+              // onChange={handleInputChange}
             />
 
             {/* DaisyUI Modal in a separate component */}
             {isModalOpen && (
               <MapModal
-                selectedLocation={selectedLocation}
-                setSelectedLocation={setSelectedLocation}
-                onChange={handleLocationChange} // Pass handleLocationChange
+                selectedLocation={selectedLocationCordinate}
+                setSelectedLocation={setSelectedLocationCordinate}
+                selectedLocationName={selectedLocationName}
+                setSelectedLocationName={setSelectedLocationName}
+                onChange={handleLocationChange}
                 onClose={closeModal}
               />
             )}

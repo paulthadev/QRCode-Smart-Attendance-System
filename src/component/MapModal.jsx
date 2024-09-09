@@ -10,22 +10,28 @@ import {
 import { useEffect } from "react";
 import L from "leaflet";
 
-const MapModal = ({ onClose, selectedLocation, setSelectedLocation }) => {
+const MapModal = ({
+  onClose,
+  selectedLocationCordinate,
+  setSelectedLocationCordinate,
+  selectedLocationName,
+  setSelectedLocationName,
+}) => {
   // Custom component to handle map click and update selected location
   const LocationMarker = () => {
     useMapEvents({
       click(e) {
         const location = e.latlng;
-        setSelectedLocation(location); // Store selected location coordinates
+        setSelectedLocationCordinate(location); // Store selected location coordinates
       },
     });
 
     return selectedLocation ? (
-      <Marker position={selectedLocation}>
+      <Marker position={selectedLocationCordinate}>
         <Popup>
-          Latitude: {selectedLocation.lat.toFixed(4)}
+          Latitude: {selectedLocationCordinate.lat.toFixed(4)}
           <br />
-          Longitude: {selectedLocation.lng.toFixed(4)}
+          Longitude: {selectedLocationCordinate.lng.toFixed(4)}
         </Popup>
       </Marker>
     ) : null;
@@ -46,7 +52,9 @@ const MapModal = ({ onClose, selectedLocation, setSelectedLocation }) => {
   return (
     <dialog open className="modal">
       <div className="modal-box modal-bottom sm:modal-middle w-11/12 max-w-5xl">
-        <h3 className="font-bold text-lg">FUTA Map!</h3>
+        <p className="font-bold text-center text-lg sm:text-sm pb-2">
+          Map of Federal University of Technology, Akure.
+        </p>
 
         <div className="relative top-0 left-0 w-full h-[550px]">
           <MapContainer
