@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Input from "../component/Input";
 import useUserDetails from "../hooks/useUserDetails";
+import "leaflet/dist/leaflet.css";
+import MapModal from "../component/MapModal";
 
 const ClassSchedule = () => {
   const { userDetails } = useUserDetails();
@@ -13,12 +15,13 @@ const ClassSchedule = () => {
     note: "",
   });
 
-  const handleInputChange = (e) => {
-    setformData({ ...formData, [e.target.name]: e.target.value });
+  // Function to open the modal
+  const openModal = () => {
+    document.getElementById("my_modal_5").showModal();
   };
 
-  const onFocus = () => {
-    console.log("Focused");
+  const handleInputChange = (e) => {
+    setformData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handelSubmit = (e) => {
@@ -46,6 +49,7 @@ const ClassSchedule = () => {
               onChange={handleInputChange}
               value={formData.courseTitle}
             />
+
             <Input
               label="Course Code"
               name="courseCode"
@@ -54,15 +58,20 @@ const ClassSchedule = () => {
               onChange={handleInputChange}
               value={formData.courseCode}
             />
+
             <Input
               label="Lecture Venue"
               name="lectureVenue"
               type="text"
-              onFocus={onFocus}
               placeholder="Enter the venue for lecture"
               onChange={handleInputChange}
               value={formData.lectureVenue}
+              MapModal={openModal} // Open the modal
             />
+
+            {/* DaisyUI Modal in a separate component */}
+            <MapModal modalId="my_modal_5" />
+
             <div className="grid grid-cols-2 justify-stretch gap-x-10">
               <Input
                 name="time"
