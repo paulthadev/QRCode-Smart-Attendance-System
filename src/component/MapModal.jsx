@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
-// Modal.js
-const MapModal = ({ modalId }) => {
+
+const MapModal = ({ onClose }) => {
   return (
-    <dialog id={modalId} className="modal modal-bottom sm:modal-middle">
+    <dialog open className="modal modal-bottom sm:modal-middle">
       <div className="modal-box">
         <h3 className="font-bold text-lg">Hello!</h3>
         <p className="py-4">Press ESC key or click the button below to close</p>
         <div className="modal-action">
-          {/* The form button will close the modal */}
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
+          {/* Button to close the modal */}
+          <button className="btn" onClick={onClose}>
+            Close
+          </button>
         </div>
       </div>
     </dialog>
