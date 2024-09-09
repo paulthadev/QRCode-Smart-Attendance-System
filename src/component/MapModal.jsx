@@ -1,19 +1,84 @@
 /* eslint-disable react/prop-types */
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import L from "leaflet";
 
 const MapModal = ({
   onClose,
-  selectedLocation,
-  setSelectedLocation,
+  selectedLocationCordinate,
+  setSelectedLocationCordinate,
+  selectedLocationName,
+  setSelectedLocationName,
   onChange,
 }) => {
-  const handleMapClick = (e) => {
-    const location = e.latlng;
-    setSelectedLocation(location);
-    onChange(location); // Call onChange with the selected location
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const markerRef = useRef(null); // Create a ref to the marker
+
+  // Function to reverse geocode the coordinates into a readable address
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      setLoadingAddress(true); // Set loading to true
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const address = response.data.display_name;
+      setSelectedLocationName(address);
+      onChange(address); // Call onChange with the address
+    } catch (error) {
+      console.error("Error with reverse geocoding:", error);
+    } finally {
+      setLoadingAddress(false); // Set loading to false after request completes
+    }
+  };
+
+  // Custom component to handle map click and update selected location
+  const LocationMarker = () => {
+    const map = useMap(); // Access the map instance
+
+    useMapEvents({
+      click(e) {
+        const location = e.latlng;
+        setSelectedLocationCordinate(location); // Store selected location coordinates
+
+        // Call reverse geocode function to get the address
+        reverseGeocode(location.lat, location.lng);
+      },
+    });
+
+    // Open the popup automatically when marker is placed
+    useEffect(() => {
+      if (selectedLocationCordinate) {
+        const marker = markerRef.current;
+        if (marker) {
+          marker.openPopup(); // Open the popup
+          map.setView(selectedLocationCordinate, 15); // Center the map on the selected location
+        }
+      }
+    }, [selectedLocationCordinate, map]);
+
+    return selectedLocationCordinate ? (
+      <Marker
+        position={selectedLocationCordinate}
+        ref={markerRef} // Attach the ref to the marker
+      >
+        <Popup>
+          Latitude: {selectedLocationCordinate.lat.toFixed(4)}
+          <br />
+          Longitude: {selectedLocationCordinate.lng.toFixed(4)}
+          <br />
+          {loadingAddress ? "Loading address..." : selectedLocationName}
+        </Popup>
+      </Marker>
+    ) : null;
   };
 
   useEffect(() => {
@@ -29,35 +94,28 @@ const MapModal = ({
   }, []);
 
   return (
-    <dialog open className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
-        {/* main content */}
-        <h3 className="font-bold text-lg">Futa Map!</h3>
+    <dialog open className="modal">
+      <div className="modal-box modal-bottom sm:modal-middle w-11/12 max-w-5xl">
+        <p className="font-bold text-center text-lg sm:text-sm pb-2">
+          Map of Federal University of Technology, Akure.
+        </p>
 
-        <div className="relative top-0 left-0 w-full h-[400px]">
+        <div className="relative top-0 left-0 w-full h-[550px]">
           <MapContainer
-            center={[51.505, -0.09]}
-            zoom={13}
+            center={[7.3056, 5.1357]}
+            zoom={20}
             style={{ height: "100%", width: "100%" }}
-            onClick={handleMapClick}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-            {selectedLocation && (
-              <Marker position={selectedLocation}>
-                <Popup>
-                  Latitude: {selectedLocation.lat.toFixed(4)}
-                  <br />
-                  Longitude: {selectedLocation.lng.toFixed(4)}
-                </Popup>
-              </Marker>
-            )}
+
+            {/* LocationMarker component handles map clicks and updates the selected location */}
+            <LocationMarker />
           </MapContainer>
         </div>
 
-        {/* Button to close the modal */}
         <div className="modal-action">
           <button className="btn" onClick={onClose}>
             Close

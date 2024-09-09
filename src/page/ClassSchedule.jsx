@@ -7,11 +7,16 @@ const ClassSchedule = () => {
   // Get user details from the custom hook
   const { userDetails } = useUserDetails();
 
+  // State to hold selected location
+  const [selectedLocationCordinate, setSelectedLocationCordinate] =
+    useState("");
+  const [selectedLocationName, setSelectedLocationName] = useState("");
+
   // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: "",
+    lectureVenue: "", // Will be updated by selectedLocationName
     time: "",
     date: "",
     note: "",
@@ -19,9 +24,6 @@ const ClassSchedule = () => {
 
   // State to hold modal open/close
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // State to hold selected location
-  const [selectedLocation, setSelectedLocation] = useState(null);
 
   // Function to open the modal
   const openModal = () => {
@@ -39,19 +41,19 @@ const ClassSchedule = () => {
   };
 
   // Function to handle location change from the map
-  const handleLocationChange = (location) => {
+  const handleLocationChange = (locationName) => {
     setFormData({
       ...formData,
-      lectureVenue: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`,
+      lectureVenue: locationName, // Update lectureVenue with locationName
     });
-    setSelectedLocation(location);
-    closeModal();
+    setSelectedLocationName(locationName); // Update selected location name
+    closeModal(); // Close the modal after selecting the location
   };
 
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log({ ...formData, selectedLocationCordinate });
   };
 
   return (
@@ -70,7 +72,7 @@ const ClassSchedule = () => {
               label="Course Title"
               name="courseTitle"
               type="text"
-              placeholder="Enter Lecturer title"
+              placeholder="Enter Course title"
               onChange={handleInputChange}
               value={formData.courseTitle}
             />
@@ -88,18 +90,20 @@ const ClassSchedule = () => {
               label="Lecture Venue"
               name="lectureVenue"
               type="text"
-              placeholder="Enter the venue for lecture"
-              onChange={handleInputChange}
               value={formData.lectureVenue}
-              MapModal={openModal} // Open the modal
+              readOnly
+              MapModal={openModal}
+              onChange={handleInputChange}
             />
 
-            {/* DaisyUI Modal in a separate component */}
+            {/* DaisyUI Modal */}
             {isModalOpen && (
               <MapModal
-                selectedLocation={selectedLocation}
-                setSelectedLocation={setSelectedLocation}
-                onChange={handleLocationChange} // Pass handleLocationChange
+                selectedLocationCordinate={selectedLocationCordinate}
+                setSelectedLocationCordinate={setSelectedLocationCordinate}
+                selectedLocationName={selectedLocationName}
+                setSelectedLocationName={setSelectedLocationName}
+                onChange={handleLocationChange}
                 onClose={closeModal}
               />
             )}

@@ -7,6 +7,10 @@ body {
     min-height: 100vh;
 }
 
+.studentLogin {
+    background-image: url('/studentBG.jpg');
+}
+
 input[type="date"]::-webkit-calendar-picker-indicator {
     /* This makes the icon black */
     filter: invert(1);
