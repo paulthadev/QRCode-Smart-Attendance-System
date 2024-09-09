@@ -22,6 +22,7 @@ const ClassSchedule = () => {
 
   // State to hold selected location
   const [selectedLocation, setSelectedLocation] = useState(null);
+  console.log(selectedLocation);
 
   // Function to open the modal
   const openModal = () => {
