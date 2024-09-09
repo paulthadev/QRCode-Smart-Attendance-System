@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Input from "../component/Input";
 import useUserDetails from "../hooks/useUserDetails";
-import "leaflet/dist/leaflet.css";
 import MapModal from "../component/MapModal";
 
 const ClassSchedule = () => {
   const { userDetails } = useUserDetails();
-  const [formData, setformData] = useState({
+  const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
     lectureVenue: "",
@@ -14,17 +13,23 @@ const ClassSchedule = () => {
     date: "",
     note: "",
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Function to open the modal
   const openModal = () => {
-    document.getElementById("my_modal_5").showModal();
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   const handleInputChange = (e) => {
-    setformData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handelSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
   };
@@ -33,7 +38,7 @@ const ClassSchedule = () => {
     <section>
       <div className="grid md:grid-cols-2">
         <form
-          onSubmit={handelSubmit}
+          onSubmit={handleSubmit}
           className="px-6 lg:px-[133px] overflow-scroll h-[100vh]"
         >
           <img src="/trackAS.png" alt="logo" className="my-24" />
@@ -70,7 +75,7 @@ const ClassSchedule = () => {
             />
 
             {/* DaisyUI Modal in a separate component */}
-            <MapModal modalId="my_modal_5" />
+            {isModalOpen && <MapModal onClose={closeModal} />}
 
             <div className="grid grid-cols-2 justify-stretch gap-x-10">
               <Input
