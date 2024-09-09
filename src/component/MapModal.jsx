@@ -8,6 +8,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import { useEffect } from "react";
+import axios from "axios";
 import L from "leaflet";
 
 const MapModal = ({
@@ -17,21 +18,41 @@ const MapModal = ({
   selectedLocationName,
   setSelectedLocationName,
 }) => {
+  // Function to reverse geocode the coordinates into a readable address
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const address = response.data.display_name;
+      setSelectedLocationName(address); // Store the reverse geocoded location name
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error with reverse geocoding:", error);
+    }
+  };
+
   // Custom component to handle map click and update selected location
   const LocationMarker = () => {
     useMapEvents({
       click(e) {
         const location = e.latlng;
         setSelectedLocationCordinate(location); // Store selected location coordinates
+
+        // Call reverse geocode function to get the address
+        reverseGeocode(location.lat, location.lng);
       },
     });
 
-    return selectedLocation ? (
+    return selectedLocationCordinate ? (
       <Marker position={selectedLocationCordinate}>
         <Popup>
           Latitude: {selectedLocationCordinate.lat.toFixed(4)}
           <br />
           Longitude: {selectedLocationCordinate.lng.toFixed(4)}
+          <br />
+          {selectedLocationName && <span>{selectedLocationName}</span>}
         </Popup>
       </Marker>
     ) : null;
