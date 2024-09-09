@@ -12,15 +12,14 @@ const ClassSchedule = () => {
     useState("");
   const [selectedLocationName, setSelectedLocationName] = useState("");
 
-  console.log(selectedLocation);
+  console.log(selectedLocationCordinate);
+  console.log(selectedLocationName);
 
   // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: selectedLocation
-      ? `${selectedLocation.lat}, ${selectedLocation.lng}`
-      : "", // Set default value to selected location
+    lectureVenue: "", // Will be updated by selectedLocationName
     time: "",
     date: "",
     note: "",
@@ -48,10 +47,10 @@ const ClassSchedule = () => {
   const handleLocationChange = (location) => {
     setFormData({
       ...formData,
-      lectureVenue: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`,
+      lectureVenue: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`, // Update lectureVenue with coordinates
     });
-    setSelectedLocation(location);
-    closeModal();
+    setSelectedLocationCordinate(location);
+    closeModal(); // Close the modal after selecting the location
   };
 
   // Function to handle form submission
@@ -76,7 +75,7 @@ const ClassSchedule = () => {
               label="Course Title"
               name="courseTitle"
               type="text"
-              placeholder="Enter Lecturer title"
+              placeholder="Enter Course title"
               onChange={handleInputChange}
               value={formData.courseTitle}
             />
@@ -94,17 +93,17 @@ const ClassSchedule = () => {
               label="Lecture Venue"
               name="lectureVenue"
               type="text"
-              value={selectedLocationCordinate}
-              MapModal={openModal}
+              value={formData.lectureVenue}
               readOnly
+              MapModal={openModal}
               // onChange={handleInputChange}
             />
 
-            {/* DaisyUI Modal in a separate component */}
+            {/* DaisyUI Modal */}
             {isModalOpen && (
               <MapModal
-                selectedLocation={selectedLocationCordinate}
-                setSelectedLocation={setSelectedLocationCordinate}
+                selectedLocationCordinate={selectedLocationCordinate}
+                setSelectedLocationCordinate={setSelectedLocationCordinate}
                 selectedLocationName={selectedLocationName}
                 setSelectedLocationName={setSelectedLocationName}
                 onChange={handleLocationChange}
