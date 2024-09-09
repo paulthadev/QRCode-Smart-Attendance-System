@@ -5,9 +5,10 @@ import {
   TileLayer,
   Marker,
   Popup,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import L from "leaflet";
 
@@ -18,9 +19,13 @@ const MapModal = ({
   selectedLocationName,
   setSelectedLocationName,
 }) => {
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const markerRef = useRef(null); // Create a ref to the marker
+
   // Function to reverse geocode the coordinates into a readable address
   const reverseGeocode = async (lat, lng) => {
     try {
+      setLoadingAddress(true); // Set loading to true
       const response = await axios.get(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
       );
@@ -28,11 +33,15 @@ const MapModal = ({
       setSelectedLocationName(address);
     } catch (error) {
       console.error("Error with reverse geocoding:", error);
+    } finally {
+      setLoadingAddress(false); // Set loading to false after request completes
     }
   };
 
   // Custom component to handle map click and update selected location
   const LocationMarker = () => {
+    const map = useMap(); // Access the map instance
+
     useMapEvents({
       click(e) {
         const location = e.latlng;
@@ -43,14 +52,28 @@ const MapModal = ({
       },
     });
 
+    // Open the popup automatically when marker is placed
+    useEffect(() => {
+      if (selectedLocationCordinate) {
+        const marker = markerRef.current;
+        if (marker) {
+          marker.openPopup(); // Open the popup
+          map.setView(selectedLocationCordinate, 15); // Center the map on the selected location
+        }
+      }
+    }, [selectedLocationCordinate, map]);
+
     return selectedLocationCordinate ? (
-      <Marker position={selectedLocationCordinate}>
+      <Marker
+        position={selectedLocationCordinate}
+        ref={markerRef} // Attach the ref to the marker
+      >
         <Popup>
           Latitude: {selectedLocationCordinate.lat.toFixed(4)}
           <br />
           Longitude: {selectedLocationCordinate.lng.toFixed(4)}
           <br />
-          {selectedLocationName && <span>{selectedLocationName}</span>}
+          {loadingAddress ? "Loading address..." : selectedLocationName}
         </Popup>
       </Marker>
     ) : null;
