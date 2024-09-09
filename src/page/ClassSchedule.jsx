@@ -1,89 +1,116 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../utils/supabaseClient"; // Adjust the path as necessary
+import { useState } from "react";
 import Input from "../component/Input";
+import useUserDetails from "../hooks/useUserDetails";
+import MapModal from "../component/MapModal";
 
 const ClassSchedule = () => {
-  const [lecturer, setLecturer] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const { userDetails } = useUserDetails();
+  const [formData, setFormData] = useState({
+    courseTitle: "",
+    courseCode: "",
+    lectureVenue: "",
+    time: "",
+    date: "",
+    note: "",
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchLecturerDetails = async () => {
-      try {
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession();
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
-        if (sessionError) throw sessionError;
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
-        if (session && session.user) {
-          const userId = session.user.id;
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-          const { data: lecturerData, error } = await supabase
-            .from("lecturers")
-            .select("id, fullName, phone_number, email, lecturer_id")
-            .eq("id", userId)
-            .single();
-
-          if (error) throw error;
-
-          if (lecturerData) {
-            setLecturer(lecturerData);
-          } else {
-            setErrorMessage("Lecturer details not found.");
-          }
-        } else {
-          setErrorMessage("User is not logged in.");
-        }
-      } catch (error) {
-        console.error("Error fetching lecturer details:", error);
-        setErrorMessage(`Failed to fetch lecturer details: ${error.message}`);
-      }
-    };
-
-    fetchLecturerDetails();
-  }, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
 
   return (
     <section>
       <div className="grid md:grid-cols-2">
         <form
-          action=""
+          onSubmit={handleSubmit}
           className="px-6 lg:px-[133px] overflow-scroll h-[100vh]"
         >
           <img src="/trackAS.png" alt="logo" className="my-24" />
           <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
-            Welcome{lecturer ? `, ${lecturer.fullName}` : "!"}
+            Welcome{userDetails ? `, ${userDetails.fullName}` : "!"}
           </h2>
           <div className="grid gap-y-4">
             <Input
               label="Course Title"
+              name="courseTitle"
               type="text"
               placeholder="Enter Lecturer title"
+              onChange={handleInputChange}
+              value={formData.courseTitle}
             />
+
             <Input
               label="Course Code"
+              name="courseCode"
               type="text"
               placeholder="Enter your course code"
+              onChange={handleInputChange}
+              value={formData.courseCode}
             />
+
             <Input
               label="Lecture Venue"
+              name="lectureVenue"
               type="text"
               placeholder="Enter the venue for lecture"
+              onChange={handleInputChange}
+              value={formData.lectureVenue}
+              MapModal={openModal} // Open the modal
             />
+
+            {/* DaisyUI Modal in a separate component */}
+            {isModalOpen && <MapModal onClose={closeModal} />}
+
             <div className="grid grid-cols-2 justify-stretch gap-x-10">
-              <Input type="number" label="Time" placeholder="12:00AM" />
-              <Input type="date" label="Date" />
+              <Input
+                name="time"
+                type="time"
+                label="Time"
+                placeholder="12:00AM"
+                onChange={handleInputChange}
+                value={formData.time}
+              />
+              <Input
+                name="date"
+                type="date"
+                label="Date"
+                onChange={handleInputChange}
+                value={formData.date}
+              />
             </div>
-            <Input type="text" label="Note" placeholder="Write a note..." />
+
+            <Input
+              name="note"
+              type="text"
+              label="Note"
+              placeholder="Write a note..."
+              onChange={handleInputChange}
+              value={formData.note}
+            />
           </div>
+
           <button
-            className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold mb-8"
+            className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold"
             type="submit"
           >
             Generate QR code
           </button>
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         </form>
         <div>
           <img
