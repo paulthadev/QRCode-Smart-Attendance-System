@@ -1,5 +1,13 @@
 /* eslint-disable react/prop-types */
-const Input = ({ label, type, placeholder, onChange, value, name }) => {
+const Input = ({
+  label,
+  type,
+  placeholder,
+  onChange,
+  value,
+  name,
+  onFocus,
+}) => {
   return (
     <div className="form-control">
       <label htmlFor={name} className="label">
@@ -8,6 +16,7 @@ const Input = ({ label, type, placeholder, onChange, value, name }) => {
         </span>
       </label>
       <input
+        onFocus={onFocus}
         name={name}
         id={name}
         type={type}
