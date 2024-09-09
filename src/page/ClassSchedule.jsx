@@ -4,7 +4,10 @@ import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
 
 const ClassSchedule = () => {
+  // Get user details from the custom hook
   const { userDetails } = useUserDetails();
+
+  // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
@@ -13,7 +16,12 @@ const ClassSchedule = () => {
     date: "",
     note: "",
   });
+
+  // State to hold modal open/close
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // State to hold selected location
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   // Function to open the modal
   const openModal = () => {
@@ -25,10 +33,22 @@ const ClassSchedule = () => {
     setIsModalOpen(false);
   };
 
+  // Function to handle input change
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to handle location change from the map
+  const handleLocationChange = (location) => {
+    setFormData({
+      ...formData,
+      lectureVenue: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`,
+    });
+    setSelectedLocation(location);
+    closeModal();
+  };
+
+  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
@@ -75,7 +95,14 @@ const ClassSchedule = () => {
             />
 
             {/* DaisyUI Modal in a separate component */}
-            {isModalOpen && <MapModal onClose={closeModal} />}
+            {isModalOpen && (
+              <MapModal
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
+                onChange={handleLocationChange} // Pass handleLocationChange
+                onClose={closeModal}
+              />
+            )}
 
             <div className="grid grid-cols-2 justify-stretch gap-x-10">
               <Input
