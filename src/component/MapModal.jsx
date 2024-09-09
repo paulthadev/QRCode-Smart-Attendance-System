@@ -1,19 +1,34 @@
 /* eslint-disable react/prop-types */
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
 
-const MapModal = ({
-  onClose,
-  selectedLocation,
-  setSelectedLocation,
-  onChange,
-}) => {
-  const handleMapClick = (e) => {
-    const location = e.latlng;
-    setSelectedLocation(location);
-    onChange(location); // Call onChange with the selected location
+const MapModal = ({ onClose, selectedLocation, setSelectedLocation }) => {
+  // Custom component to handle map click and update selected location
+  const LocationMarker = () => {
+    useMapEvents({
+      click(e) {
+        const location = e.latlng;
+        setSelectedLocation(location); // Store selected location coordinates
+      },
+    });
+
+    return selectedLocation ? (
+      <Marker position={selectedLocation}>
+        <Popup>
+          Latitude: {selectedLocation.lat.toFixed(4)}
+          <br />
+          Longitude: {selectedLocation.lng.toFixed(4)}
+        </Popup>
+      </Marker>
+    ) : null;
   };
 
   useEffect(() => {
@@ -30,35 +45,25 @@ const MapModal = ({
 
   return (
     <dialog open className="modal">
-      <div className="modal-box w-11/12 max-w-7xl">
-        {/* main content */}
+      <div className="modal-box modal-bottom sm:modal-middle w-11/12 max-w-5xl">
         <h3 className="font-bold text-lg">FUTA Map!</h3>
 
-        <div className="relative top-0 left-0 w-full h-[500px]">
-          {/* Set the center to FUTA coordinates */}
+        <div className="relative top-0 left-0 w-full h-[550px]">
           <MapContainer
             center={[7.3056, 5.1357]}
-            zoom={20}
+            zoom={15}
             style={{ height: "100%", width: "100%" }}
-            onClick={handleMapClick}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-            {selectedLocation && (
-              <Marker position={selectedLocation}>
-                <Popup>
-                  Latitude: {selectedLocation.lat.toFixed(4)}
-                  <br />
-                  Longitude: {selectedLocation.lng.toFixed(4)}
-                </Popup>
-              </Marker>
-            )}
+
+            {/* LocationMarker component handles map clicks and updates the selected location */}
+            <LocationMarker />
           </MapContainer>
         </div>
 
-        {/* Button to close the modal */}
         <div className="modal-action">
           <button className="btn" onClick={onClose}>
             Close
