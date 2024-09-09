@@ -5,12 +5,16 @@ import Logo from "/trackAS.png";
 import loginImg from "/LoginLecturer.jpg";
 import Input from "../component/Input";
 import { Link } from "react-router-dom";
+import Spinner from "../component/Spinner";
+import toast from "react-hot-toast";
 
 const LoginLecturer = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,20 +22,19 @@ const LoginLecturer = () => {
 
     try {
       // Sign in the lecturer with email and password
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
-      console.log("Login successful:", data);
-
-      // Redirect the lecturer to the class schedule or dashboard
+      // Redirect to the class schedule
+      toast.success("Login successful");
       navigate("/classSchedule");
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Login failed. Please check your email and password.");
+      setError(error.error_description || error.message);
+      toast.error(`${error.error_description || error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -64,18 +67,22 @@ const LoginLecturer = () => {
                 required
               />
             </div>
+
+            {error && <p className="text-red-500">{error}</p>}
+
             <p className="mt-6 text-[#000D46] capitalize text-sm text-end">
               forgot password
             </p>
             <button
-              className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold"
+              className="btn bg-[#000D46] disabled:bg-[#000D46] disabled:cursor-not-allowed text-white btn-block mt-6 text-base font-bold"
               type="submit"
               disabled={isLoading}
             >
-              {isLoading ? "Logging in..." : "Login"}
+              {isLoading ? <Spinner /> : "Login"}
             </button>
           </form>
 
+          {/* Social Login */}
           <div>
             <div className="flex mt-6 items-center gap-3 justify-center">
               <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
@@ -97,6 +104,9 @@ const LoginLecturer = () => {
             </p>
           </div>
         </div>
+        {/* End Social Login */}
+
+        {/* Start of  Side Image (only shown on Large screen) */}
         <div>
           <img
             src={loginImg}
@@ -105,6 +115,8 @@ const LoginLecturer = () => {
           />
         </div>
       </div>
+
+      {/* End of  Side Image (only shown on Large screen) */}
     </section>
   );
 };
