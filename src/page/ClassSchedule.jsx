@@ -12,9 +12,6 @@ const ClassSchedule = () => {
     useState("");
   const [selectedLocationName, setSelectedLocationName] = useState("");
 
-  console.log(selectedLocationCordinate);
-  console.log(selectedLocationName);
-
   // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
@@ -44,19 +41,19 @@ const ClassSchedule = () => {
   };
 
   // Function to handle location change from the map
-  const handleLocationChange = (location) => {
+  const handleLocationChange = (locationName) => {
     setFormData({
       ...formData,
-      lectureVenue: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`, // Update lectureVenue with coordinates
+      lectureVenue: locationName, // Update lectureVenue with locationName
     });
-    setSelectedLocationCordinate(location);
+    setSelectedLocationName(locationName); // Update selected location name
     closeModal(); // Close the modal after selecting the location
   };
 
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log({ ...formData, selectedLocationCordinate });
   };
 
   return (
@@ -96,7 +93,7 @@ const ClassSchedule = () => {
               value={formData.lectureVenue}
               readOnly
               MapModal={openModal}
-              // onChange={handleInputChange}
+              onChange={handleInputChange}
             />
 
             {/* DaisyUI Modal */}
