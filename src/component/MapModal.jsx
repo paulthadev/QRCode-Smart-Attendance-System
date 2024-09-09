@@ -25,9 +25,7 @@ const MapModal = ({
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
       );
       const address = response.data.display_name;
-      setSelectedLocationName(address); // Store the reverse geocoded location name
-
-      console.log(response.data);
+      setSelectedLocationName(address);
     } catch (error) {
       console.error("Error with reverse geocoding:", error);
     }
