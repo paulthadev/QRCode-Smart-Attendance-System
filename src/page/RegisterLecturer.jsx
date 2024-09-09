@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabaseClient";
 import Input from "../component/Input";
 import Logo from "/trackAS.png";
 import registerImg from "/registerImg.jpg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const RegisterLecturer = () => {
   const [fullName, setFullName] = useState("");
@@ -85,6 +85,7 @@ const RegisterLecturer = () => {
               onChange={(e) => setFullName(e.target.value)}
               required
             />
+
             <Input
               type="email"
               label="Email"
@@ -125,6 +126,19 @@ const RegisterLecturer = () => {
           >
             {isLoading ? "Creating Account..." : "Create Account"}
           </button>
+
+          <button className="btn bg-white btn-block mt-6 text-black hover:bg-transparent">
+            Continue with Google
+          </button>
+          <p className="mt-4 text-[#1E1E1E] text-center">
+            Don&apos;t have an account?{" "}
+            <Link
+              className="text-[#000D46] font-semibold"
+              to={"/loginLecturer"}
+            >
+              Login
+            </Link>
+          </p>
         </form>
 
         <div className="max-[100%] hidden md:block">
