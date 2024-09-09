@@ -19,15 +19,14 @@ const Input = ({
       </label>
 
       <div className="relative">
-        <div>
-          {name === "lectureVenue" && (
-            <Map
-              variant="Bold"
-              className="absolute text-black items-center inset-y-2.5 right-4 flex pointer-events-none"
-              onClick={MapModal}
-            />
-          )}
-        </div>
+        {name === "lectureVenue" && (
+          <Map
+            variant="Bold"
+            className="absolute text-black items-center inset-y-2.5 right-4 flex cursor-pointer"
+            onClick={MapModal} // Trigger modal on click
+          />
+        )}
+
         <input
           name={name}
           id={name}
@@ -36,10 +35,11 @@ const Input = ({
           value={value}
           required
           placeholder={placeholder}
-          className="input bg-white w-[100%]  text-black border-black border-[1px] focus:border-black  rounded-[0.375rem]"
+          className="input bg-white w-[100%] text-black border-black border-[1px] focus:border-black rounded-[0.375rem] pr-12"
         />
       </div>
     </div>
   );
 };
+
 export default Input;
