@@ -29,15 +29,16 @@ const MapModal = ({
   }, []);
 
   return (
-    <dialog open className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
+    <dialog open className="modal">
+      <div className="modal-box w-11/12 max-w-7xl">
         {/* main content */}
-        <h3 className="font-bold text-lg">Futa Map!</h3>
+        <h3 className="font-bold text-lg">FUTA Map!</h3>
 
-        <div className="relative top-0 left-0 w-full h-[400px]">
+        <div className="relative top-0 left-0 w-full h-[500px]">
+          {/* Set the center to FUTA coordinates */}
           <MapContainer
-            center={[51.505, -0.09]}
-            zoom={13}
+            center={[7.3056, 5.1357]}
+            zoom={20}
             style={{ height: "100%", width: "100%" }}
             onClick={handleMapClick}
           >
