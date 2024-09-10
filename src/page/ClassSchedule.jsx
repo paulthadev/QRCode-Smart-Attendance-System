@@ -2,58 +2,58 @@ import { useState } from "react";
 import Input from "../component/Input";
 import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
+import QRCodeModal from "../component/QRCodeModal"; // Import QRCodeModal
 
 const ClassSchedule = () => {
-  // Get user details from the custom hook
   const { userDetails } = useUserDetails();
 
-  // State to hold selected location
   const [selectedLocationCordinate, setSelectedLocationCordinate] =
     useState("");
   const [selectedLocationName, setSelectedLocationName] = useState("");
 
-  // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: "", // Will be updated by selectedLocationName
+    lectureVenue: "",
     time: "",
     date: "",
     note: "",
   });
 
-  // State to hold modal open/close
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQRCodeModalOpen, setIsQRCodeModalOpen] = useState(false); // New state for QR modal
+  const [qrCodeData, setQRCodeData] = useState(""); // State for QR code data
 
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const openQRCodeModal = () => setIsQRCodeModalOpen(true);
+  const closeQRCodeModal = () => setIsQRCodeModalOpen(false);
 
-  // Function to handle input change
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Function to handle location change from the map
   const handleLocationChange = (locationName) => {
     setFormData({
       ...formData,
-      lectureVenue: locationName, // Update lectureVenue with locationName
+      lectureVenue: locationName,
     });
-    setSelectedLocationName(locationName); // Update selected location name
-    closeModal(); // Close the modal after selecting the location
+    setSelectedLocationName(locationName);
+    // closeModal(); // Close the modal after selecting a location
   };
 
-  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ ...formData, selectedLocationCordinate });
+
+    // Combine all form data and selected location into one string for the QR code
+    const dataToEncode = JSON.stringify({
+      ...formData,
+      selectedLocationCordinate,
+    });
+
+    setQRCodeData(dataToEncode); // Set the data for the QR code
+    openQRCodeModal(); // Open the QR code modal
   };
 
   return (
@@ -93,10 +93,8 @@ const ClassSchedule = () => {
               value={formData.lectureVenue}
               readOnly
               MapModal={openModal}
-              onChange={handleInputChange}
             />
 
-            {/* DaisyUI Modal */}
             {isModalOpen && (
               <MapModal
                 selectedLocationCordinate={selectedLocationCordinate}
@@ -151,6 +149,11 @@ const ClassSchedule = () => {
           />
         </div>
       </div>
+
+      {/* QRCode Modal */}
+      {isQRCodeModalOpen && (
+        <QRCodeModal data={qrCodeData} onClose={closeQRCodeModal} />
+      )}
     </section>
   );
 };
