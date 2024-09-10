@@ -40,7 +40,6 @@ const ClassSchedule = () => {
   };
 
   const lecturerId = userDetails?.lecturer_id;
-  console.log(lecturerId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +49,9 @@ const ClassSchedule = () => {
       locationGeography = `SRID=4326;POINT(${selectedLocationCordinate.lng} ${selectedLocationCordinate.lat})`;
     }
 
-    const { courseCode, lectureVenue, time } = formData;
+    const { courseTitle, courseCode, lectureVenue, time, date, note } =
+      formData;
+
     const registrationLink = `${VERCEL_URL}/studentLogin?courseCode=${encodeURIComponent(
       courseCode
     )}&time=${encodeURIComponent(time)}&lectureVenue=${encodeURIComponent(
@@ -76,30 +77,42 @@ const ClassSchedule = () => {
     });
 
     // Save the data to Supabase
-    const { data, error } = await supabase.from("classes").insert([
-      {
-        course_title: formData.courseTitle,
-        course_code: formData.courseCode,
-        time: new Date(`${formData.date}T${formData.time}`).toISOString(),
-        date: new Date(formData.date).toISOString(),
-        location: locationGeography,
-        note: formData.note,
-        qr_code: qrCodeDataUrl,
-        lecturer_id: lecturerId,
-        location_name: formData.lectureVenue,
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("classes")
+      .insert([
+        {
+          course_title: courseTitle,
+          course_code: courseCode,
+          time: new Date(`${date}T${time}`).toISOString(),
+          date: new Date(date).toISOString(),
+          location: locationGeography,
+          note: note,
+          qr_code: qrCodeDataUrl,
+          lecturer_id: lecturerId,
+          location_name: lectureVenue,
+        },
+      ])
+      .select("course_id"); // Request the generated course_id
 
     if (error) {
       toast.error(`Error inserting class schedule data, ${error.message}`);
       console.error("Error inserting data:", error);
     } else {
       toast.success("Class schedule created successfully");
-    }
+      // Extract and use the generated course_id
+      const generatedCourseId = data[0]?.course_id;
+      const updatedRegistrationLink = `${VERCEL_URL}/studentLogin?courseId=${encodeURIComponent(
+        generatedCourseId
+      )}&time=${encodeURIComponent(time)}&lectureVenue=${encodeURIComponent(
+        lectureVenue
+      )}&lat=${selectedLocationCordinate?.lat}&lng=${
+        selectedLocationCordinate?.lng
+      }`;
 
-    // Set the QR code data and open the QR modal
-    setQrData(registrationLink);
-    setIsQRModalOpen(true);
+      // Set the QR code data and open the QR modal
+      setQrData(updatedRegistrationLink);
+      setIsQRModalOpen(true);
+    }
   };
 
   return (
