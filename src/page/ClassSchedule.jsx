@@ -92,19 +92,20 @@ const ClassSchedule = () => {
           location_name: lectureVenue,
         },
       ])
-      .select("course_id"); // Request the generated course_id
+      .select("course_id");
 
     if (error) {
       toast.error(`Error inserting class schedule data, ${error.message}`);
       console.error("Error inserting data:", error);
     } else {
       toast.success("Class schedule created successfully");
+
       // Extract and use the generated course_id
       const generatedCourseId = data[0]?.course_id;
-      const updatedRegistrationLink = `${VERCEL_URL}/studentLogin?courseId=${encodeURIComponent(
+      const updatedRegistrationLink = `${VERCEL_URL}/attendance?courseId=${encodeURIComponent(
         generatedCourseId
-      )}&time=${encodeURIComponent(time)}&lectureVenue=${encodeURIComponent(
-        lectureVenue
+      )}&time=${encodeURIComponent(time)}&courseCode=${encodeURIComponent(
+        courseCode
       )}&lat=${selectedLocationCordinate?.lat}&lng=${
         selectedLocationCordinate?.lng
       }`;

@@ -3,7 +3,8 @@ import RegisterLecturer from "./page/RegisterLecturer";
 import LoginLecturer from "./page/LoginLecturer";
 import ClassSchedule from "./page/ClassSchedule";
 import LandingPage from "./page/LandingPage";
-import StudentLogin from "./page/StudentLogin";
+import Attendance from "./page/Attendance";
+import SuccessPage from "./page/SuccessPage";
 
 const router = createBrowserRouter([
   {
@@ -16,8 +17,8 @@ const router = createBrowserRouter([
     element: <RegisterLecturer />,
   },
   {
-    path: "/studentLogin",
-    element: <StudentLogin />,
+    path: "/attendance",
+    element: <Attendance />,
   },
   {
     path: "/loginLecturer",
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/classSchedule",
     element: <ClassSchedule />,
+  },
+  {
+    path: "/success",
+    element: <SuccessPage />,
   },
 ]);
 
