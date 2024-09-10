@@ -85,7 +85,7 @@ const RegisterLecturer = () => {
               onChange={(e) => setFullName(e.target.value)}
               required
             />
-            
+
             <Input
               type="email"
               label="Email"
@@ -134,9 +134,9 @@ const RegisterLecturer = () => {
             Don&apos;t have an account?{" "}
             <Link
               className="text-[#000D46] font-semibold"
-              to={"/registerLecturer"}
+              to={"/loginLecturer"}
             >
-              Register Now
+              Login
             </Link>
           </p>
         </form>
