@@ -31,8 +31,6 @@ const ClassSchedule = () => {
   // State to store QR data
   const [qrData, setQrData] = useState("");
 
-  console.log("QR Data:", qrData); // Add this line to verify QR data
-
   // Function to open the map modal
   const openModal = () => {
     setIsModalOpen(true);
