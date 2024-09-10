@@ -8,6 +8,9 @@ import { supabase } from "../utils/supabaseClient";
 import useUserDetails from "../hooks/useUserDetails";
 import { QRCodeSVG } from "qrcode.react";
 import toast from "react-hot-toast";
+import LogoutButton from "../component/LogoutButton";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ClassSchedule = () => {
   const { userDetails } = useUserDetails();
@@ -37,7 +40,7 @@ const ClassSchedule = () => {
   };
 
   const lecturerId = userDetails?.lecturer_id;
-  console.log("");
+  console.log(lecturerId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,23 +50,13 @@ const ClassSchedule = () => {
       locationGeography = `SRID=4326;POINT(${selectedLocationCordinate.lng} ${selectedLocationCordinate.lat})`;
     }
 
-    const coordinateString = selectedLocationCordinate
-      ? `${selectedLocationCordinate.lat.toFixed(
-          6
-        )},${selectedLocationCordinate.lng.toFixed(6)}`
-      : "No coordinates selected";
+    // Registration link
+    const registrationLink = `${BASE_URL}/studentLogin`;
 
-    const simpleText = `${formData.courseTitle} - ${formData.courseCode}
-Venue: ${formData.lectureVenue}
-Time: ${formData.time}
-Date: ${formData.date}
-Note: ${formData.note}
-Coordinates: ${coordinateString}`;
-
-    // Generate QR code as a data URL
+    // Generate QR code with registration link
     const qrCodeDataUrl = await new Promise((resolve) => {
       const svg = document.createElement("div");
-      const qrCode = <QRCodeSVG value={simpleText} size={256} />;
+      const qrCode = <QRCodeSVG value={registrationLink} size={256} />;
       import("react-dom/client").then((ReactDOM) => {
         ReactDOM.createRoot(svg).render(qrCode);
         setTimeout(() => {
@@ -90,7 +83,6 @@ Coordinates: ${coordinateString}`;
         location_name: formData.lectureVenue,
       },
     ]);
-    console.log(data);
 
     if (error) {
       toast.error(`Error inserting class schedule data, ${error.message}`);
@@ -100,13 +92,16 @@ Coordinates: ${coordinateString}`;
     }
 
     // Set the QR code data and open the QR modal
-    setQrData(simpleText);
+    setQrData(registrationLink);
     setIsQRModalOpen(true);
   };
 
   return (
-    <div className="flex flex-col md:flex-row max-h-[90vh]  bg-gray-100">
-      <div className="w-full md:w-1/2 p-4 md:p-4 flex items-start justify-center">
+    <div className="flex flex-col md:flex-row max-h-[90vh]  bg-gray-100 ">
+      <div className="w-full md:w-1/2 p-4 md:p-4 flex items-start justify-center relative">
+        <div className="absolute top-5 right-9">
+          <LogoutButton />
+        </div>
         <div className="w-full max-w-2xl h-[90vh] overflow-y-auto">
           <div className="items-center flex self-center justify-center">
             <img src={logo} alt="logo" />
