@@ -10,7 +10,7 @@ import { QRCodeSVG } from "qrcode.react";
 import toast from "react-hot-toast";
 import LogoutButton from "../component/LogoutButton";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const VERCEL_URL = import.meta.env.VITE_VERCEL_URL;
 
 const ClassSchedule = () => {
   const { userDetails } = useUserDetails();
@@ -51,7 +51,7 @@ const ClassSchedule = () => {
     }
 
     // Registration link
-    const registrationLink = `${BASE_URL}/studentLogin`;
+    const registrationLink = `${VERCEL_URL}/studentLogin`;
 
     // Generate QR code with registration link
     const qrCodeDataUrl = await new Promise((resolve) => {
