@@ -1,175 +1,211 @@
 import { useState } from "react";
 import Input from "../component/Input";
-import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
-import { QRCodeSVG } from "qrcode.react";
 import QRCodeModal from "../component/QRCodeModal";
+import scheduleImg from "../../public/scheduleImg.jpg";
+import logo from "../../public/trackAS.png";
+import { supabase } from "../utils/supabaseClient";
+import useUserDetails from "../hooks/useUserDetails";
+import { QRCodeSVG } from "qrcode.react";
+import toast from "react-hot-toast";
 
 const ClassSchedule = () => {
-  // Get user details from the custom hook
   const { userDetails } = useUserDetails();
 
-  // State to hold selected location
-  const [selectedLocationCordinate, setSelectedLocationCordinate] =
-    useState("");
-  const [selectedLocationName, setSelectedLocationName] = useState("");
-
-  // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: "", // Will be updated by selectedLocationName
+    lectureVenue: "",
     time: "",
     date: "",
     note: "",
   });
 
-  // State to hold modals
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isQRModalOpen, setIsQRModalOpen] = useState(false); // QR Code Modal State
-
-  // State to store QR data
+  const [selectedLocationCordinate, setSelectedLocationCordinate] =
+    useState(null);
   const [qrData, setQrData] = useState("");
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
 
-  // Function to open the map modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the map modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // Function to handle input change
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Function to handle location change from the map
-  const handleLocationChange = (locationName) => {
-    setFormData({
-      ...formData,
-      lectureVenue: locationName, // Update lectureVenue with locationName
-    });
-    setSelectedLocationName(locationName); // Update selected location name
-    closeModal(); // Close the modal after selecting the location
+  const handleLocationChange = (locationName, coordinate) => {
+    setFormData({ ...formData, lectureVenue: locationName });
+    setSelectedLocationCordinate(coordinate);
   };
 
-  // Function to handle form submission
-  const handleSubmit = (e) => {
+  const lecturerId = userDetails?.lecturer_id;
+  console.log("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const qrData = JSON.stringify({
-      ...formData,
-      selectedLocationCordinate,
+
+    let locationGeography = null;
+    if (selectedLocationCordinate) {
+      locationGeography = `SRID=4326;POINT(${selectedLocationCordinate.lng} ${selectedLocationCordinate.lat})`;
+    }
+
+    const coordinateString = selectedLocationCordinate
+      ? `${selectedLocationCordinate.lat.toFixed(
+          6
+        )},${selectedLocationCordinate.lng.toFixed(6)}`
+      : "No coordinates selected";
+
+    const simpleText = `${formData.courseTitle} - ${formData.courseCode}
+Venue: ${formData.lectureVenue}
+Time: ${formData.time}
+Date: ${formData.date}
+Note: ${formData.note}
+Coordinates: ${coordinateString}`;
+
+    // Generate QR code as a data URL
+    const qrCodeDataUrl = await new Promise((resolve) => {
+      const svg = document.createElement("div");
+      const qrCode = <QRCodeSVG value={simpleText} size={256} />;
+      import("react-dom/client").then((ReactDOM) => {
+        ReactDOM.createRoot(svg).render(qrCode);
+        setTimeout(() => {
+          const svgString = new XMLSerializer().serializeToString(
+            svg.querySelector("svg")
+          );
+          const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
+          resolve(dataUrl);
+        }, 0);
+      });
     });
-    setQrData(qrData);
+
+    // Save the data to Supabase
+    const { data, error } = await supabase.from("classes").insert([
+      {
+        course_title: formData.courseTitle,
+        course_code: formData.courseCode,
+        time: new Date(`${formData.date}T${formData.time}`).toISOString(),
+        date: new Date(formData.date).toISOString(),
+        location: locationGeography,
+        note: formData.note,
+        qr_code: qrCodeDataUrl,
+        lecturer_id: lecturerId,
+        location_name: formData.lectureVenue,
+      },
+    ]);
+    console.log(data);
+
+    if (error) {
+      toast.error(`Error inserting class schedule data, ${error.message}`);
+      console.error("Error inserting data:", error);
+    } else {
+      toast.success("Class schedule created successfully");
+    }
+
+    // Set the QR code data and open the QR modal
+    setQrData(simpleText);
     setIsQRModalOpen(true);
   };
 
   return (
-    <section>
-      <div className="grid md:grid-cols-2">
-        <form
-          onSubmit={handleSubmit}
-          className="px-6 lg:px-[133px] overflow-scroll h-[100vh]"
-        >
-          <img src="/trackAS.png" alt="logo" className="my-24" />
-          <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
-            Welcome{userDetails ? `, ${userDetails.fullName}` : "!"}
+    <div className="flex flex-col md:flex-row max-h-[90vh]  bg-gray-100">
+      <div className="w-full md:w-1/2 p-4 md:p-4 flex items-start justify-center">
+        <div className="w-full max-w-2xl h-[90vh] overflow-y-auto">
+          <div className="items-center flex self-center justify-center">
+            <img src={logo} alt="logo" />
+          </div>
+
+          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
+            Welcome, {userDetails?.fullName}
           </h2>
-          <div className="grid gap-y-4">
+          <p className="text-sm text-neutral-600 text-center mb-1">
+            Schedule a class using the form below
+          </p>
+          <form onSubmit={handleSubmit} className="py-0">
             <Input
               label="Course Title"
               name="courseTitle"
               type="text"
-              placeholder="Enter Course title"
               onChange={handleInputChange}
               value={formData.courseTitle}
+              required={true}
             />
-
             <Input
               label="Course Code"
               name="courseCode"
               type="text"
-              placeholder="Enter your course code"
               onChange={handleInputChange}
               value={formData.courseCode}
+              required={true}
             />
 
-            <Input
-              label="Lecture Venue"
-              name="lectureVenue"
-              type="text"
-              value={formData.lectureVenue}
-              readOnly
-              MapModal={openModal} // Open map modal
-            />
-
-            {/* DaisyUI Modal for Map */}
-            {isModalOpen && (
-              <MapModal
-                selectedLocationCordinate={selectedLocationCordinate}
-                setSelectedLocationCordinate={setSelectedLocationCordinate}
-                selectedLocationName={selectedLocationName}
-                setSelectedLocationName={setSelectedLocationName}
-                onChange={handleLocationChange}
-                onClose={closeModal}
-              />
-            )}
-
-            <div className="grid grid-cols-2 justify-stretch gap-x-10">
+            <div className="relative">
               <Input
-                name="time"
-                type="time"
-                label="Time"
-                placeholder="12:00AM"
-                onChange={handleInputChange}
-                value={formData.time}
+                label="Lecture Venue"
+                name="lectureVenue"
+                type="text"
+                placeholder="kindly select location"
+                value={formData.lectureVenue}
+                readOnly
+                required={true}
               />
-              <Input
-                name="date"
-                type="date"
-                label="Date"
-                onChange={handleInputChange}
-                value={formData.date}
-              />
+              <button
+                type="button"
+                onClick={() => setIsMapModalOpen(true)}
+                className="btn absolute right-0 top-9 px-3 bg-green-500 text-white rounded-r-md hover:bg-green-600 transition-colors"
+              >
+                Select Location
+              </button>
             </div>
-
             <Input
+              name="time"
+              type="time"
+              label="Time"
+              onChange={handleInputChange}
+              value={formData.time}
+              required={true}
+            />
+            <Input
+              name="date"
+              type="date"
+              label="Date"
+              onChange={handleInputChange}
+              value={formData.date}
+              required={true}
+            />
+            <Input
+              label="Note"
               name="note"
               type="text"
-              label="Note"
-              placeholder="Write a note..."
               onChange={handleInputChange}
               value={formData.note}
             />
-          </div>
-
-          <button
-            className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold"
-            type="submit"
-          >
-            Generate QR code
-          </button>
-        </form>
-        <div>
-          <img
-            src="/scheduleImg.jpg"
-            alt="schedule image"
-            className="h-screen hidden md:block w-full object-cover"
-          />
+            <button
+              type="submit"
+              className="w-full btn bg-blue-500 text-white hover:bg-blue-600 transition-colors mt-4"
+            >
+              Generate QR Code
+            </button>
+          </form>
         </div>
       </div>
 
-      {/* Modal to display QR Code */}
-      {isQRModalOpen && (
-        <QRCodeModal onClose={() => setIsQRModalOpen(false)}>
-          <h2 className="text-2xl font-bold mb-4">Generated QR Code</h2>
-          <QRCodeSVG value={qrData} size={256} />
-        </QRCodeModal>
+      <div className="hidden md:flex w-1/2 h-screen items-center justify-center overflow-hidden">
+        <img
+          src={scheduleImg}
+          alt="Student"
+          className="object-cover w-full h-full max-w-none"
+        />
+      </div>
+
+      {isMapModalOpen && (
+        <MapModal
+          onClose={() => setIsMapModalOpen(false)}
+          onSelectLocation={handleLocationChange}
+        />
       )}
-    </section>
+
+      {isQRModalOpen && (
+        <QRCodeModal qrData={qrData} onClose={() => setIsQRModalOpen(false)} />
+      )}
+    </div>
   );
 };
 
