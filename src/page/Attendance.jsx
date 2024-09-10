@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { calculateDistance } from "../utils/distanceCalculation";
 import Input from "../component/Input";
@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 const StudentLogin = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
 
   const [userDistance, setUserDistance] = useState(null);
@@ -22,7 +23,6 @@ const StudentLogin = () => {
   const lng = parseFloat(queryParams.get("lng"));
 
   useEffect(() => {
-    // Function to get class details
     const fetchClassDetails = async () => {
       const { data, error } = await supabase
         .from("classes")
@@ -41,7 +41,6 @@ const StudentLogin = () => {
   }, [courseId]);
 
   useEffect(() => {
-    // Function to get the user's current location
     const getUserLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -49,7 +48,6 @@ const StudentLogin = () => {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
 
-            // Calculate distance
             const distance = calculateDistance(userLat, userLng, lat, lng);
             setUserDistance(distance);
 
@@ -99,12 +97,19 @@ const StudentLogin = () => {
     const { error: updateError } = await supabase
       .from("classes")
       .update({ attendees: updatedAttendees })
-      .eq("course_code", courseCode);
+      .eq("course_id", courseId); // Corrected to use course_id
 
     if (updateError) {
       toast.error(`Error marking attendance: ${updateError.message}`);
     } else {
       toast.success("Attendance marked successfully.");
+
+      // Clear input fields
+      setMatricNumber("");
+      setName("");
+
+      // Redirect to success page
+      navigate("/success", { replace: true });
     }
   };
 
@@ -151,6 +156,7 @@ const StudentLogin = () => {
             name="name"
             label="Name"
             placeholder={"Enter your name"}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
@@ -159,6 +165,7 @@ const StudentLogin = () => {
             name="matricNumber"
             label="Matriculation Number"
             placeholder={"Your matriculation number"}
+            value={matricNumber}
             onChange={(e) => setMatricNumber(e.target.value)}
           />
 

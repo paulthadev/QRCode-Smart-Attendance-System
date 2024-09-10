@@ -102,7 +102,7 @@ const ClassSchedule = () => {
 
       // Extract and use the generated course_id
       const generatedCourseId = data[0]?.course_id;
-      const updatedRegistrationLink = `${VERCEL_URL}/studentLogin?courseId=${encodeURIComponent(
+      const updatedRegistrationLink = `${VERCEL_URL}/attendance?courseId=${encodeURIComponent(
         generatedCourseId
       )}&time=${encodeURIComponent(time)}&courseCode=${encodeURIComponent(
         courseCode
