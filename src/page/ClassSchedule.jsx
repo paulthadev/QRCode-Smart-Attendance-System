@@ -37,6 +37,7 @@ const ClassSchedule = () => {
   };
 
   const lecturerId = userDetails?.lecturer_id;
+  console.log("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,9 +112,12 @@ Coordinates: ${coordinateString}`;
             <img src={logo} alt="logo" />
           </div>
 
-          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold my-6 text-center">
-            Class Schedule
+          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
+            Welcome, {userDetails?.fullName}
           </h2>
+          <p className="text-sm text-neutral-600 text-center mb-1">
+            Schedule a class using the form below
+          </p>
           <form onSubmit={handleSubmit} className="py-0">
             <Input
               label="Course Title"
@@ -121,6 +125,7 @@ Coordinates: ${coordinateString}`;
               type="text"
               onChange={handleInputChange}
               value={formData.courseTitle}
+              required={true}
             />
             <Input
               label="Course Code"
@@ -128,14 +133,18 @@ Coordinates: ${coordinateString}`;
               type="text"
               onChange={handleInputChange}
               value={formData.courseCode}
+              required={true}
             />
+
             <div className="relative">
               <Input
                 label="Lecture Venue"
                 name="lectureVenue"
                 type="text"
+                placeholder="kindly select location"
                 value={formData.lectureVenue}
                 readOnly
+                required={true}
               />
               <button
                 type="button"
@@ -151,6 +160,7 @@ Coordinates: ${coordinateString}`;
               label="Time"
               onChange={handleInputChange}
               value={formData.time}
+              required={true}
             />
             <Input
               name="date"
@@ -158,6 +168,7 @@ Coordinates: ${coordinateString}`;
               label="Date"
               onChange={handleInputChange}
               value={formData.date}
+              required={true}
             />
             <Input
               label="Note"
