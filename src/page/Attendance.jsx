@@ -78,6 +78,7 @@ const StudentLogin = () => {
     }
 
     setIsLoading(true);
+
     const { data, error } = await supabase
       .from("classes")
       .select("attendees")
@@ -86,10 +87,23 @@ const StudentLogin = () => {
 
     if (error) {
       toast.error(`Error fetching class data: ${error.message}`);
+      setIsLoading(false);
       return;
     }
 
     const { attendees = [] } = data;
+
+    // Check if the matriculation number already exists
+    const matricNumberExists = attendees.some(
+      (attendee) => attendee.matric_no === matricNumber.toUpperCase()
+    );
+
+    if (matricNumberExists) {
+      toast.error("This matriculation number has already been registered.");
+      setIsLoading(false);
+      return;
+    }
+
     const newAttendee = {
       matric_no: matricNumber.toUpperCase(),
       name: name.toUpperCase(),
