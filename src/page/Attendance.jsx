@@ -4,11 +4,14 @@ import { calculateDistance } from "../utils/distanceCalculation";
 import Input from "../component/Input";
 import { supabase } from "../utils/supabaseClient";
 import toast from "react-hot-toast";
+import Spinner from "../component/Spinner";
 
 const StudentLogin = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [userDistance, setUserDistance] = useState(null);
   const [isWithinRange, setIsWithinRange] = useState(false);
@@ -74,6 +77,7 @@ const StudentLogin = () => {
       return;
     }
 
+    setIsLoading(true);
     const { data, error } = await supabase
       .from("classes")
       .select("attendees")
@@ -107,6 +111,7 @@ const StudentLogin = () => {
       // Clear input fields
       setMatricNumber("");
       setName("");
+      setIsLoading(false);
 
       // Redirect to success page
       navigate("/success", { replace: true });
@@ -171,7 +176,7 @@ const StudentLogin = () => {
 
           {isWithinRange ? (
             <button className="btn my-5 btn-block text-lg" type="submit">
-              Mark Attendance
+              {isLoading ? <Spinner /> : "Mark Attendance"}
             </button>
           ) : (
             <p>
