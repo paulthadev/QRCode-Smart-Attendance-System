@@ -1,139 +1,47 @@
-import { useState } from "react";
 import Input from "../component/Input";
-import useUserDetails from "../hooks/useUserDetails";
-import MapModal from "../component/MapModal";
+import scheduleImg from "/scheduleImg.jpg";
+import Logo from "/trackAS.png";
 
 const ClassSchedule = () => {
-  // Get user details from the custom hook
-  const { userDetails } = useUserDetails();
-
-  // State to hold form data
-  const [formData, setFormData] = useState({
-    courseTitle: "",
-    courseCode: "",
-    lectureVenue: "",
-    time: "",
-    date: "",
-    note: "",
-  });
-
-  // State to hold modal open/close
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // State to hold selected location
-  const [selectedLocation, setSelectedLocation] = useState(null);
-
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // Function to handle input change
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Function to handle location change from the map
-  const handleLocationChange = (location) => {
-    setFormData({
-      ...formData,
-      lectureVenue: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`,
-    });
-    setSelectedLocation(location);
-    closeModal();
-  };
-
-  // Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  };
-
   return (
     <section>
       <div className="grid md:grid-cols-2">
         <form
-          onSubmit={handleSubmit}
+          action=""
           className="px-6 lg:px-[133px] overflow-scroll h-[100vh]"
         >
-          <img src="/trackAS.png" alt="logo" className="my-24" />
+          <img src={Logo} alt="login logo" className="my-24" />
           <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
-            Welcome{userDetails ? `, ${userDetails.fullName}` : "!"}
+            Wellcome, Mr james
           </h2>
           <div className="grid gap-y-4">
             <Input
-              label="Course Title"
-              name="courseTitle"
-              type="text"
-              placeholder="Enter Lecturer title"
-              onChange={handleInputChange}
-              value={formData.courseTitle}
+              label={"Course Title"}
+              type={"text"}
+              placeholder={"Enter Lecturer title"}
             />
-
             <Input
-              label="Course Code"
-              name="courseCode"
-              type="text"
-              placeholder="Enter your course code"
-              onChange={handleInputChange}
-              value={formData.courseCode}
+              label={"Course Code"}
+              type={"text"}
+              placeholder={"Enter your course code"}
             />
-
             <Input
-              label="Lecture Venue"
-              name="lectureVenue"
-              type="text"
-              placeholder="Enter the venue for lecture"
-              onChange={handleInputChange}
-              value={formData.lectureVenue}
-              MapModal={openModal} // Open the modal
+              label={"Lecture Venue"}
+              type={"text"}
+              placeholder={"Enter the venue for lecture"}
             />
-
-            {/* DaisyUI Modal in a separate component */}
-            {isModalOpen && (
-              <MapModal
-                selectedLocation={selectedLocation}
-                setSelectedLocation={setSelectedLocation}
-                onChange={handleLocationChange} // Pass handleLocationChange
-                onClose={closeModal}
-              />
-            )}
-
             <div className="grid grid-cols-2 justify-stretch gap-x-10">
-              <Input
-                name="time"
-                type="time"
-                label="Time"
-                placeholder="12:00AM"
-                onChange={handleInputChange}
-                value={formData.time}
-              />
-              <Input
-                name="date"
-                type="date"
-                label="Date"
-                onChange={handleInputChange}
-                value={formData.date}
-              />
+              <Input type={"number"} label={"Time"} placeholder={"12:00AM"} />
+              <Input type={"date"} label={"Date"} />
             </div>
-
             <Input
-              name="note"
-              type="text"
-              label="Note"
-              placeholder="Write a note..."
-              onChange={handleInputChange}
-              value={formData.note}
+              type={"text"}
+              label={"Note"}
+              placeholder={"Write a note..."}
             />
           </div>
-
           <button
-            className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold"
+            className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold mb-8"
             type="submit"
           >
             Generate QR code
@@ -141,7 +49,7 @@ const ClassSchedule = () => {
         </form>
         <div>
           <img
-            src="/scheduleImg.jpg"
+            src={scheduleImg}
             alt="schedule image"
             className="h-screen hidden md:block w-full object-cover"
           />
@@ -150,5 +58,4 @@ const ClassSchedule = () => {
     </section>
   );
 };
-
 export default ClassSchedule;
