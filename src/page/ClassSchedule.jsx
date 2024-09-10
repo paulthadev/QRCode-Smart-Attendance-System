@@ -2,58 +2,80 @@ import { useState } from "react";
 import Input from "../component/Input";
 import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
-import QRCodeModal from "../component/QRCodeModal"; // Import QRCodeModal
+import QRCode from "react-qr-code"; // Use react-qr-code instead
+import QRCodeModal from "../component/QRCodeModal";
 
 const ClassSchedule = () => {
+  // Get user details from the custom hook
   const { userDetails } = useUserDetails();
 
+  // State to hold selected location
   const [selectedLocationCordinate, setSelectedLocationCordinate] =
     useState("");
   const [selectedLocationName, setSelectedLocationName] = useState("");
 
+  // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: "",
+    lectureVenue: "", // Will be updated by selectedLocationName
     time: "",
     date: "",
     note: "",
   });
 
+  // State to hold modals
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isQRCodeModalOpen, setIsQRCodeModalOpen] = useState(false); // New state for QR modal
-  const [qrCodeData, setQRCodeData] = useState(""); // State for QR code data
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false); // QR Code Modal State
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  // State to store QR data
+  const [qrData, setQrData] = useState("");
 
-  const openQRCodeModal = () => setIsQRCodeModalOpen(true);
-  const closeQRCodeModal = () => setIsQRCodeModalOpen(false);
+  console.log(qrData);
 
+  // Function to open the map modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to close the map modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Function to handle input change
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to handle location change from the map
   const handleLocationChange = (locationName) => {
     setFormData({
       ...formData,
-      lectureVenue: locationName,
+      lectureVenue: locationName, // Update lectureVenue with locationName
     });
-    setSelectedLocationName(locationName);
-    // closeModal(); // Close the modal after selecting a location
+    setSelectedLocationName(locationName); // Update selected location name
+    closeModal(); // Close the modal after selecting the location
   };
 
+  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Combine all form data and selected location into one string for the QR code
-    const dataToEncode = JSON.stringify({
-      ...formData,
-      selectedLocationCordinate,
+    // Prepare the data to be encoded in the QR code
+    const qrData = JSON.stringify({
+      courseTitle: formData.courseTitle,
+      courseCode: formData.courseCode,
+      lectureVenue: formData.lectureVenue,
+      time: formData.time,
+      date: formData.date,
+      note: formData.note,
+      selectedLocationCordinate: selectedLocationCordinate, // Include coordinates
     });
 
-    setQRCodeData(dataToEncode); // Set the data for the QR code
-    openQRCodeModal(); // Open the QR code modal
+    // Store QR data in state and open QR code modal
+    setQrData(qrData);
+    setIsQRModalOpen(true); // Open QR Code Modal
   };
 
   return (
@@ -92,9 +114,10 @@ const ClassSchedule = () => {
               type="text"
               value={formData.lectureVenue}
               readOnly
-              MapModal={openModal}
+              MapModal={openModal} // Open map modal
             />
 
+            {/* DaisyUI Modal for Map */}
             {isModalOpen && (
               <MapModal
                 selectedLocationCordinate={selectedLocationCordinate}
@@ -150,9 +173,17 @@ const ClassSchedule = () => {
         </div>
       </div>
 
-      {/* QRCode Modal */}
-      {isQRCodeModalOpen && (
-        <QRCodeModal data={qrCodeData} onClose={closeQRCodeModal} />
+      {/* Modal to display QR Code */}
+      {isQRModalOpen && (
+        <QRCodeModal onClose={() => setIsQRModalOpen(false)}>
+          <h2 className="text-2xl font-bold mb-4">Generated QR Code</h2>
+          <QRCode
+            value={JSON.stringify({
+              ...formData,
+              selectedLocationCordinate,
+            })}
+          />
+        </QRCodeModal>
       )}
     </section>
   );

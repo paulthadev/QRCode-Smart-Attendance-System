@@ -14,11 +14,11 @@
     "axios": "^1.7.7",
     "iconsax-react": "^0.0.8",
     "leaflet": "^1.9.4",
-    "qrcode.react": "^4.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
     "react-leaflet": "^4.2.1",
+    "react-qr-code": "^2.0.15",
     "react-router-dom": "^6.26.1"
   },
   "devDependencies": {
