@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { Map } from "iconsax-react";
 
 const Input = ({
   label,
@@ -8,7 +7,6 @@ const Input = ({
   onChange,
   value,
   name,
-  MapModal,
   defaultValue,
 }) => {
   return (
@@ -19,27 +17,17 @@ const Input = ({
         </span>
       </label>
 
-      <div className="relative">
-        {name === "lectureVenue" && (
-          <Map
-            variant="Bold"
-            className="absolute text-black items-center inset-y-2.5 right-4 flex cursor-pointer"
-            onClick={MapModal} // Trigger modal on click
-          />
-        )}
-
-        <input
-          name={name}
-          id={name}
-          type={type}
-          onChange={onChange}
-          value={value}
-          defaultValue={defaultValue}
-          required
-          placeholder={placeholder}
-          className="input bg-white w-[100%] text-black border-black border-[1px] focus:border-black rounded-[0.375rem] pr-12"
-        />
-      </div>
+      <input
+        name={name}
+        id={name}
+        type={type}
+        onChange={onChange}
+        value={value}
+        defaultValue={defaultValue}
+        required
+        placeholder={placeholder}
+        className="input bg-white w-[100%] text-black border-black border-[1px] focus:border-black rounded-[0.375rem] pr-12"
+      />
     </div>
   );
 };

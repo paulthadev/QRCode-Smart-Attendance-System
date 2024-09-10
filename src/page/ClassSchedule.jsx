@@ -1,175 +1,123 @@
 import { useState } from "react";
 import Input from "../component/Input";
-import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
-import { QRCodeSVG } from "qrcode.react";
 import QRCodeModal from "../component/QRCodeModal";
 
 const ClassSchedule = () => {
-  // Get user details from the custom hook
-  const { userDetails } = useUserDetails();
-
-  // State to hold selected location
-  const [selectedLocationCordinate, setSelectedLocationCordinate] =
-    useState("");
-  const [selectedLocationName, setSelectedLocationName] = useState("");
-
-  // State to hold form data
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
-    lectureVenue: "", // Will be updated by selectedLocationName
+    lectureVenue: "",
     time: "",
     date: "",
     note: "",
   });
 
-  // State to hold modals
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isQRModalOpen, setIsQRModalOpen] = useState(false); // QR Code Modal State
-
-  // State to store QR data
+  const [selectedLocationCordinate, setSelectedLocationCordinate] =
+    useState(null);
   const [qrData, setQrData] = useState("");
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
 
-  // Function to open the map modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the map modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // Function to handle input change
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Function to handle location change from the map
-  const handleLocationChange = (locationName) => {
-    setFormData({
-      ...formData,
-      lectureVenue: locationName, // Update lectureVenue with locationName
-    });
-    setSelectedLocationName(locationName); // Update selected location name
-    closeModal(); // Close the modal after selecting the location
+  const handleLocationChange = (locationName, coordinate) => {
+    setFormData({ ...formData, lectureVenue: locationName });
+    setSelectedLocationCordinate(coordinate);
   };
 
-  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const qrData = JSON.stringify({
-      ...formData,
-      selectedLocationCordinate,
-    });
-    setQrData(qrData);
+    const coordinateString = selectedLocationCordinate
+      ? `${selectedLocationCordinate.lat.toFixed(
+          6
+        )},${selectedLocationCordinate.lng.toFixed(6)}`
+      : "No coordinates selected";
+
+    const simpleText = `${formData.courseTitle} - ${formData.courseCode}
+Venue: ${formData.lectureVenue}
+Time: ${formData.time}
+Date: ${formData.date}
+Note: ${formData.note}
+Coordinates: ${coordinateString}`;
+
+    setQrData(simpleText);
     setIsQRModalOpen(true);
   };
 
   return (
-    <section>
-      <div className="grid md:grid-cols-2">
-        <form
-          onSubmit={handleSubmit}
-          className="px-6 lg:px-[133px] overflow-scroll h-[100vh]"
-        >
-          <img src="/trackAS.png" alt="logo" className="my-24" />
-          <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
-            Welcome{userDetails ? `, ${userDetails.fullName}` : "!"}
-          </h2>
-          <div className="grid gap-y-4">
-            <Input
-              label="Course Title"
-              name="courseTitle"
-              type="text"
-              placeholder="Enter Course title"
-              onChange={handleInputChange}
-              value={formData.courseTitle}
-            />
-
-            <Input
-              label="Course Code"
-              name="courseCode"
-              type="text"
-              placeholder="Enter your course code"
-              onChange={handleInputChange}
-              value={formData.courseCode}
-            />
-
-            <Input
-              label="Lecture Venue"
-              name="lectureVenue"
-              type="text"
-              value={formData.lectureVenue}
-              readOnly
-              MapModal={openModal} // Open map modal
-            />
-
-            {/* DaisyUI Modal for Map */}
-            {isModalOpen && (
-              <MapModal
-                selectedLocationCordinate={selectedLocationCordinate}
-                setSelectedLocationCordinate={setSelectedLocationCordinate}
-                selectedLocationName={selectedLocationName}
-                setSelectedLocationName={setSelectedLocationName}
-                onChange={handleLocationChange}
-                onClose={closeModal}
-              />
-            )}
-
-            <div className="grid grid-cols-2 justify-stretch gap-x-10">
-              <Input
-                name="time"
-                type="time"
-                label="Time"
-                placeholder="12:00AM"
-                onChange={handleInputChange}
-                value={formData.time}
-              />
-              <Input
-                name="date"
-                type="date"
-                label="Date"
-                onChange={handleInputChange}
-                value={formData.date}
-              />
-            </div>
-
-            <Input
-              name="note"
-              type="text"
-              label="Note"
-              placeholder="Write a note..."
-              onChange={handleInputChange}
-              value={formData.note}
-            />
-          </div>
-
-          <button
-            className="btn bg-[#000D46] text-white btn-block mt-6 text-base font-bold"
-            type="submit"
-          >
-            Generate QR code
-          </button>
-        </form>
-        <div>
-          <img
-            src="/scheduleImg.jpg"
-            alt="schedule image"
-            className="h-screen hidden md:block w-full object-cover"
+    <div className="p-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          label="Course Title"
+          name="courseTitle"
+          type="text"
+          onChange={handleInputChange}
+          value={formData.courseTitle}
+        />
+        <Input
+          label="Course Code"
+          name="courseCode"
+          type="text"
+          onChange={handleInputChange}
+          value={formData.courseCode}
+        />
+        <div className="relative">
+          <Input
+            label="Lecture Venue"
+            name="lectureVenue"
+            type="text"
+            value={formData.lectureVenue}
+            readOnly
           />
+          <button
+            type="button"
+            onClick={() => setIsMapModalOpen(true)}
+            className="btn absolute right-0 top-9 px-3 bg-green-500 text-white rounded-r-md hover:bg-green-600 transition-colors"
+          >
+            Select Location
+          </button>
         </div>
-      </div>
+        <Input
+          name="time"
+          type="time"
+          label="Time"
+          onChange={handleInputChange}
+          value={formData.time}
+        />
+        <Input
+          name="date"
+          type="date"
+          label="Date"
+          onChange={handleInputChange}
+          value={formData.date}
+        />
+        <Input
+          label="Note"
+          name="note"
+          type="note"
+          onChange={handleInputChange}
+          value={formData.note}
+        />
 
-      {/* Modal to display QR Code */}
-      {isQRModalOpen && (
-        <QRCodeModal onClose={() => setIsQRModalOpen(false)}>
-          <h2 className="text-2xl font-bold mb-4">Generated QR Code</h2>
-          <QRCodeSVG value={qrData} size={256} />
-        </QRCodeModal>
+        <button type="submit" className="btn bg-blue-500 text-white">
+          Generate QR Code
+        </button>
+      </form>
+
+      {isMapModalOpen && (
+        <MapModal
+          onClose={() => setIsMapModalOpen(false)}
+          onSelectLocation={handleLocationChange}
+        />
       )}
-    </section>
+
+      {isQRModalOpen && (
+        <QRCodeModal qrData={qrData} onClose={() => setIsQRModalOpen(false)} />
+      )}
+    </div>
   );
 };
 

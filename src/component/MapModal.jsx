@@ -1,129 +1,141 @@
 /* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from "react";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
-import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import L from "leaflet";
 
-const MapModal = ({
-  onClose,
-  selectedLocationCordinate,
-  setSelectedLocationCordinate,
-  selectedLocationName,
-  setSelectedLocationName,
-  onChange,
-}) => {
-  const [loadingAddress, setLoadingAddress] = useState(false);
-  const markerRef = useRef(null); // Create a ref to the marker
+// Fix for default marker icon
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
-  // Function to reverse geocode the coordinates into a readable address
+const MapModal = ({ onClose, onSelectLocation }) => {
+  const [loading, setLoading] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState(null);
+  const [locationName, setLocationName] = useState("");
+  const markerRef = useRef(null);
+
   const reverseGeocode = async (lat, lng) => {
+    setLoading(true);
     try {
-      setLoadingAddress(true); // Set loading to true
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        `https://nominatim.openstreetmap.org/reverse`,
+        {
+          params: {
+            format: "json",
+            lat: lat,
+            lon: lng,
+          },
+        }
       );
-      const address = response.data.display_name;
-      setSelectedLocationName(address);
-      onChange(address); // Call onChange with the address
+      return response.data.display_name;
     } catch (error) {
-      console.error("Error with reverse geocoding:", error);
+      console.error("Reverse geocoding failed:", error);
+      return "Unknown location";
     } finally {
-      setLoadingAddress(false); // Set loading to false after request completes
+      setLoading(false);
     }
   };
 
-  // Custom component to handle map click and update selected location
-  const LocationMarker = () => {
-    const map = useMap(); // Access the map instance
+  const MapEvents = () => {
+    const map = useMap();
 
-    useMapEvents({
-      click(e) {
-        const location = e.latlng;
-        setSelectedLocationCordinate(location); // Store selected location coordinates
-
-        // Call reverse geocode function to get the address
-        reverseGeocode(location.lat, location.lng);
-      },
-    });
-
-    // Open the popup automatically when marker is placed
     useEffect(() => {
-      if (selectedLocationCordinate) {
-        const marker = markerRef.current;
-        if (marker) {
-          marker.openPopup(); // Open the popup
-          map.setView(selectedLocationCordinate, 15); // Center the map on the selected location
-        }
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedLocationCordinate, map]);
+      if (!map) return;
 
-    return selectedLocationCordinate ? (
-      <Marker
-        position={selectedLocationCordinate}
-        ref={markerRef} // Attach the ref to the marker
-      >
-        <Popup>
-          Latitude: {selectedLocationCordinate.lat.toFixed(4)}
-          <br />
-          Longitude: {selectedLocationCordinate.lng.toFixed(4)}
-          <br />
-          {loadingAddress ? "Loading address..." : selectedLocationName}
-        </Popup>
-      </Marker>
-    ) : null;
+      const handleClick = async (e) => {
+        const { lat, lng } = e.latlng;
+        setSelectedPosition({ lat, lng });
+        const name = await reverseGeocode(lat, lng);
+        setLocationName(name);
+        onSelectLocation(name, { lat, lng });
+
+        // Remove existing marker if any
+        if (markerRef.current) {
+          markerRef.current.remove();
+        }
+
+        // Create a new marker with a permanent popup
+        const marker = L.marker([lat, lng]).addTo(map);
+        const popupContent = `
+          <div>
+            <p>${name}</p>
+            
+          </div>
+        `;
+        marker
+          .bindPopup(popupContent, { autoClose: false, closeOnClick: false })
+          .openPopup();
+
+        // Store the marker reference
+        markerRef.current = marker;
+
+        // Center the map on the new marker
+        map.setView([lat, lng]);
+      };
+
+      map.on("click", handleClick);
+
+      return () => {
+        map.off("click", handleClick);
+      };
+    }, [map]);
+
+    return null;
   };
 
-  useEffect(() => {
-    // Fix the default icon issue with Leaflet
-    delete L.Icon.Default.prototype._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-      iconRetinaUrl:
-        "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-      shadowUrl:
-        "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-    });
-  }, []);
+  const handleConfirm = () => {
+    if (selectedPosition) {
+      onSelectLocation(locationName, selectedPosition);
+      onClose();
+    }
+  };
 
   return (
-    <dialog open className="modal">
-      <div className="modal-box modal-bottom sm:modal-middle w-11/12 max-w-5xl">
-        <p className="font-bold text-center text-lg sm:text-sm pb-2">
-          Map of Federal University of Technology, Akure.
-        </p>
-
-        <div className="relative top-0 left-0 w-full h-[550px]">
-          <MapContainer
-            center={[7.3056, 5.1357]}
-            zoom={20}
-            style={{ height: "100%", width: "100%" }}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-4 rounded-lg w-4/5 h-4/5">
+        <h2 className="sm:text-xl text-base  text-neutral-700 font-bold mb-4 text-center text">
+          Select Location
+        </h2>
+        <MapContainer
+          center={[7.3056, 5.1357]}
+          zoom={20}
+          style={{ height: "70%" }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <MapEvents />
+        </MapContainer>
+        <div className="mt-4 flex justify-between">
+          <button
+            onClick={onClose}
+            className="btn bg-red-500 text-white px-4 py-2 rounded"
+            disabled={loading}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-
-            {/* LocationMarker component handles map clicks and updates the selected location */}
-            <LocationMarker />
-          </MapContainer>
-        </div>
-
-        <div className="modal-action">
-          <button className="btn" onClick={onClose}>
-            Close
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirm}
+            className="btn bg-green-500 text-white px-4 py-2 rounded"
+            disabled={loading || !selectedPosition}
+          >
+            {loading ? "Loading..." : "Confirm Location"}
           </button>
         </div>
+        {selectedPosition && (
+          <p className="my-2 text-neutral-800 sm:text-base text-sm">
+            <b>Selected: </b>
+            {locationName}
+          </p>
+        )}
       </div>
-    </dialog>
+    </div>
   );
 };
 
