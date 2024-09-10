@@ -4,8 +4,12 @@ import MapModal from "../component/MapModal";
 import QRCodeModal from "../component/QRCodeModal";
 import scheduleImg from "../../public/scheduleImg.jpg";
 import logo from "../../public/trackAS.png";
+import { supabase } from "../utils/supabaseClient";
+import useUserDetails from "../hooks/useUserDetails";
 
 const ClassSchedule = () => {
+  const { userDetails, error } = useUserDetails();
+
   const [formData, setFormData] = useState({
     courseTitle: "",
     courseCode: "",
@@ -30,8 +34,11 @@ const ClassSchedule = () => {
     setSelectedLocationCordinate(coordinate);
   };
 
-  const handleSubmit = (e) => {
+  const lecturerId = userDetails.lecturer_id;
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const coordinateString = selectedLocationCordinate
       ? `${selectedLocationCordinate.lat.toFixed(
           6
@@ -45,6 +52,32 @@ Date: ${formData.date}
 Note: ${formData.note}
 Coordinates: ${coordinateString}`;
 
+    // Generate the QR code SVG data
+    const qrCodeSvg = document.querySelector("svg"); // Assuming the QR code is already rendered in the DOM
+    const qrCodeDataUrl = new XMLSerializer().serializeToString(qrCodeSvg); // Serialize the SVG to a string
+
+    // Save the data to Supabase
+    const { data, error } = await supabase.from("classes").insert([
+      {
+        course_title: formData.courseTitle, // Course title
+        course_code: formData.courseCode, // Course code
+        time: `${formData.time}:00`, // Time (convert to valid timestamp with seconds)
+        date: formData.date, // Date
+        location: coordinateString, // Location coordinates
+        note: formData.note, // Note
+        qr_code: qrCodeDataUrl, // QR code SVG data
+        lecturer_id: lecturerId, // Lecturer ID from authenticated user
+        location_name: formData.lectureVenue, // Location name (venue)
+      },
+    ]);
+
+    if (error) {
+      console.error("Error inserting data:", error);
+    } else {
+      console.log("Class schedule inserted successfully:", data);
+    }
+
+    // Set the QR code data and open the QR modal
     setQrData(simpleText);
     setIsQRModalOpen(true);
   };
