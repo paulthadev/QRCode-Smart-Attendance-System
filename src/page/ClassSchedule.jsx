@@ -10,6 +10,8 @@ import { QRCodeSVG } from "qrcode.react";
 import toast from "react-hot-toast";
 import LogoutButton from "../component/LogoutButton";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const ClassSchedule = () => {
   const { userDetails } = useUserDetails();
 
@@ -48,23 +50,13 @@ const ClassSchedule = () => {
       locationGeography = `SRID=4326;POINT(${selectedLocationCordinate.lng} ${selectedLocationCordinate.lat})`;
     }
 
-    const coordinateString = selectedLocationCordinate
-      ? `${selectedLocationCordinate.lat.toFixed(
-          6
-        )},${selectedLocationCordinate.lng.toFixed(6)}`
-      : "No coordinates selected";
+    // Registration link
+    const registrationLink = `${BASE_URL}/studentLogin`;
 
-    const simpleText = `${formData.courseTitle} - ${formData.courseCode}
-Venue: ${formData.lectureVenue}
-Time: ${formData.time}
-Date: ${formData.date}
-Note: ${formData.note}
-Coordinates: ${coordinateString}`;
-
-    // Generate QR code as a data URL
+    // Generate QR code with registration link
     const qrCodeDataUrl = await new Promise((resolve) => {
       const svg = document.createElement("div");
-      const qrCode = <QRCodeSVG value={simpleText} size={256} />;
+      const qrCode = <QRCodeSVG value={registrationLink} size={256} />;
       import("react-dom/client").then((ReactDOM) => {
         ReactDOM.createRoot(svg).render(qrCode);
         setTimeout(() => {
@@ -100,7 +92,7 @@ Coordinates: ${coordinateString}`;
     }
 
     // Set the QR code data and open the QR modal
-    setQrData(simpleText);
+    setQrData(registrationLink);
     setIsQRModalOpen(true);
   };
 
