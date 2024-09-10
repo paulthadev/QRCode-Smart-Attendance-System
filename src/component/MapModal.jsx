@@ -63,6 +63,7 @@ const MapModal = ({
           map.setView(selectedLocationCordinate, 15); // Center the map on the selected location
         }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedLocationCordinate, map]);
 
     return selectedLocationCordinate ? (

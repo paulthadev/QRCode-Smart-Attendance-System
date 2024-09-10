@@ -2,6 +2,8 @@ import { useState } from "react";
 import Input from "../component/Input";
 import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
+import { QRCodeSVG } from "qrcode.react";
+import QRCodeModal from "../component/QRCodeModal";
 
 const ClassSchedule = () => {
   // Get user details from the custom hook
@@ -22,15 +24,19 @@ const ClassSchedule = () => {
     note: "",
   });
 
-  // State to hold modal open/close
+  // State to hold modals
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false); // QR Code Modal State
 
-  // Function to open the modal
+  // State to store QR data
+  const [qrData, setQrData] = useState("");
+
+  // Function to open the map modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
+  // Function to close the map modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -53,7 +59,12 @@ const ClassSchedule = () => {
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ ...formData, selectedLocationCordinate });
+    const qrData = JSON.stringify({
+      ...formData,
+      selectedLocationCordinate,
+    });
+    setQrData(qrData);
+    setIsQRModalOpen(true);
   };
 
   return (
@@ -92,11 +103,10 @@ const ClassSchedule = () => {
               type="text"
               value={formData.lectureVenue}
               readOnly
-              MapModal={openModal}
-              onChange={handleInputChange}
+              MapModal={openModal} // Open map modal
             />
 
-            {/* DaisyUI Modal */}
+            {/* DaisyUI Modal for Map */}
             {isModalOpen && (
               <MapModal
                 selectedLocationCordinate={selectedLocationCordinate}
@@ -151,6 +161,14 @@ const ClassSchedule = () => {
           />
         </div>
       </div>
+
+      {/* Modal to display QR Code */}
+      {isQRModalOpen && (
+        <QRCodeModal onClose={() => setIsQRModalOpen(false)}>
+          <h2 className="text-2xl font-bold mb-4">Generated QR Code</h2>
+          <QRCodeSVG value={qrData} size={256} />
+        </QRCodeModal>
+      )}
     </section>
   );
 };
