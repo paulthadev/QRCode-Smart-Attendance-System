@@ -6,9 +6,11 @@ import scheduleImg from "../../public/scheduleImg.jpg";
 import logo from "../../public/trackAS.png";
 import { supabase } from "../utils/supabaseClient";
 import useUserDetails from "../hooks/useUserDetails";
+import { QRCodeSVG } from "qrcode.react";
+import toast from "react-hot-toast";
 
 const ClassSchedule = () => {
-  const { userDetails, error } = useUserDetails();
+  const { userDetails } = useUserDetails();
 
   const [formData, setFormData] = useState({
     courseTitle: "",
@@ -34,10 +36,15 @@ const ClassSchedule = () => {
     setSelectedLocationCordinate(coordinate);
   };
 
-  const lecturerId = userDetails.lecturer_id;
+  const lecturerId = userDetails?.lecturer_id;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let locationGeography = null;
+    if (selectedLocationCordinate) {
+      locationGeography = `SRID=4326;POINT(${selectedLocationCordinate.lng} ${selectedLocationCordinate.lat})`;
+    }
 
     const coordinateString = selectedLocationCordinate
       ? `${selectedLocationCordinate.lat.toFixed(
@@ -52,29 +59,43 @@ Date: ${formData.date}
 Note: ${formData.note}
 Coordinates: ${coordinateString}`;
 
-    // Generate the QR code SVG data
-    const qrCodeSvg = document.querySelector("svg"); // Assuming the QR code is already rendered in the DOM
-    const qrCodeDataUrl = new XMLSerializer().serializeToString(qrCodeSvg); // Serialize the SVG to a string
+    // Generate QR code as a data URL
+    const qrCodeDataUrl = await new Promise((resolve) => {
+      const svg = document.createElement("div");
+      const qrCode = <QRCodeSVG value={simpleText} size={256} />;
+      import("react-dom/client").then((ReactDOM) => {
+        ReactDOM.createRoot(svg).render(qrCode);
+        setTimeout(() => {
+          const svgString = new XMLSerializer().serializeToString(
+            svg.querySelector("svg")
+          );
+          const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
+          resolve(dataUrl);
+        }, 0);
+      });
+    });
 
     // Save the data to Supabase
     const { data, error } = await supabase.from("classes").insert([
       {
-        course_title: formData.courseTitle, // Course title
-        course_code: formData.courseCode, // Course code
-        time: `${formData.time}:00`, // Time (convert to valid timestamp with seconds)
-        date: formData.date, // Date
-        location: coordinateString, // Location coordinates
-        note: formData.note, // Note
-        qr_code: qrCodeDataUrl, // QR code SVG data
-        lecturer_id: lecturerId, // Lecturer ID from authenticated user
-        location_name: formData.lectureVenue, // Location name (venue)
+        course_title: formData.courseTitle,
+        course_code: formData.courseCode,
+        time: new Date(`${formData.date}T${formData.time}`).toISOString(),
+        date: new Date(formData.date).toISOString(),
+        location: locationGeography,
+        note: formData.note,
+        qr_code: qrCodeDataUrl,
+        lecturer_id: lecturerId,
+        location_name: formData.lectureVenue,
       },
     ]);
+    console.log(data);
 
     if (error) {
+      toast.error(`Error inserting class schedule data, ${error.message}`);
       console.error("Error inserting data:", error);
     } else {
-      console.log("Class schedule inserted successfully:", data);
+      toast.success("Class schedule created successfully");
     }
 
     // Set the QR code data and open the QR modal
