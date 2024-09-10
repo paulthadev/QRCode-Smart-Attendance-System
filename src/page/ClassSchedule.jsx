@@ -50,8 +50,14 @@ const ClassSchedule = () => {
       locationGeography = `SRID=4326;POINT(${selectedLocationCordinate.lng} ${selectedLocationCordinate.lat})`;
     }
 
-    // Registration link
-    const registrationLink = `${VERCEL_URL}/studentLogin`;
+    const { courseCode, lectureVenue, time } = formData;
+    const registrationLink = `${VERCEL_URL}/studentLogin?courseCode=${encodeURIComponent(
+      courseCode
+    )}&time=${encodeURIComponent(time)}&lectureVenue=${encodeURIComponent(
+      lectureVenue
+    )}&lat=${selectedLocationCordinate?.lat}&lng=${
+      selectedLocationCordinate?.lng
+    }`;
 
     // Generate QR code with registration link
     const qrCodeDataUrl = await new Promise((resolve) => {
