@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { Check } from "iconsax-react";
+import { FaCheckCircle } from "react-icons/fa";
 
 const SuccessPage = () => {
   return (
@@ -10,12 +10,9 @@ const SuccessPage = () => {
         <p className="text-lg text-gray-700 mb-6">
           Your attendance has been marked successfully. Thank you!
         </p>
-        <Link
-          to="/"
-          className="btn bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition"
-        >
-          Go to Homepage
-        </Link>
+        <div className="btn bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">
+          <FaCheckCircle />
+        </div>
       </div>
     </section>
   );
