@@ -95,7 +95,7 @@ const StudentLogin = () => {
 
     // Check if the matriculation number already exists
     const matricNumberExists = attendees.some(
-      (attendee) => attendee.matric_no === matricNumber.toUpperCase()
+      (attendee) => attendee.matric_no === matricNumber.trim().toUpperCase()
     );
 
     if (matricNumberExists) {
@@ -105,7 +105,7 @@ const StudentLogin = () => {
     }
 
     const newAttendee = {
-      matric_no: matricNumber.toUpperCase(),
+      matric_no: matricNumber.trim().toUpperCase(),
       name: name.toUpperCase(),
       timestamp: new Date().toISOString(),
     };
@@ -115,7 +115,7 @@ const StudentLogin = () => {
     const { error: updateError } = await supabase
       .from("classes")
       .update({ attendees: updatedAttendees })
-      .eq("course_id", courseId); // Corrected to use course_id
+      .eq("course_id", courseId);
 
     if (updateError) {
       toast.error(`Error marking attendance: ${updateError.message}`);
