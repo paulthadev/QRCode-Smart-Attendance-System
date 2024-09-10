@@ -50,17 +50,17 @@ Coordinates: ${coordinateString}`;
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-      <div className="w-full md:w-1/2 p-4 md:p-8 flex items-start justify-center">
-        <div className="w-full max-w-2xl">
+    <div className="flex flex-col md:flex-row max-h-[90vh]  bg-gray-100">
+      <div className="w-full md:w-1/2 p-4 md:p-4 flex items-start justify-center">
+        <div className="w-full max-w-2xl h-[90vh] overflow-y-auto">
           <div className="items-center flex self-center justify-center">
             <img src={logo} alt="logo" />
           </div>
 
-          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl  font-bold my-6 text-center">
+          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold my-6 text-center">
             Class Schedule
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="py-0">
             <Input
               label="Course Title"
               name="courseTitle"
@@ -114,7 +114,7 @@ Coordinates: ${coordinateString}`;
             />
             <button
               type="submit"
-              className="w-full btn bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+              className="w-full btn bg-blue-500 text-white hover:bg-blue-600 transition-colors mt-4"
             >
               Generate QR Code
             </button>
@@ -122,7 +122,7 @@ Coordinates: ${coordinateString}`;
         </div>
       </div>
 
-      <div className="hidden md:flex w-1/2 items-center justify-center overflow-hidden">
+      <div className="hidden md:flex w-1/2 h-screen items-center justify-center overflow-hidden">
         <img
           src={scheduleImg}
           alt="Student"
