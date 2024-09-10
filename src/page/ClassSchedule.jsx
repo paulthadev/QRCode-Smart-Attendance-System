@@ -2,7 +2,7 @@ import { useState } from "react";
 import Input from "../component/Input";
 import useUserDetails from "../hooks/useUserDetails";
 import MapModal from "../component/MapModal";
-import QRCode from "react-qr-code"; // Use react-qr-code instead
+import { QRCodeSVG } from "qrcode.react";
 import QRCodeModal from "../component/QRCodeModal";
 
 const ClassSchedule = () => {
@@ -31,7 +31,7 @@ const ClassSchedule = () => {
   // State to store QR data
   const [qrData, setQrData] = useState("");
 
-  console.log(qrData);
+  console.log("QR Data:", qrData); // Add this line to verify QR data
 
   // Function to open the map modal
   const openModal = () => {
@@ -61,21 +61,12 @@ const ClassSchedule = () => {
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Prepare the data to be encoded in the QR code
     const qrData = JSON.stringify({
-      courseTitle: formData.courseTitle,
-      courseCode: formData.courseCode,
-      lectureVenue: formData.lectureVenue,
-      time: formData.time,
-      date: formData.date,
-      note: formData.note,
-      selectedLocationCordinate: selectedLocationCordinate, // Include coordinates
+      ...formData,
+      selectedLocationCordinate,
     });
-
-    // Store QR data in state and open QR code modal
     setQrData(qrData);
-    setIsQRModalOpen(true); // Open QR Code Modal
+    setIsQRModalOpen(true);
   };
 
   return (
@@ -177,12 +168,7 @@ const ClassSchedule = () => {
       {isQRModalOpen && (
         <QRCodeModal onClose={() => setIsQRModalOpen(false)}>
           <h2 className="text-2xl font-bold mb-4">Generated QR Code</h2>
-          <QRCode
-            value={JSON.stringify({
-              ...formData,
-              selectedLocationCordinate,
-            })}
-          />
+          <QRCodeSVG value={qrData} size={256} />
         </QRCodeModal>
       )}
     </section>
