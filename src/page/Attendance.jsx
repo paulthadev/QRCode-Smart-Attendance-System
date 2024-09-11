@@ -78,6 +78,7 @@ const StudentLogin = () => {
     }
 
     setIsLoading(true);
+
     const { data, error } = await supabase
       .from("classes")
       .select("attendees")
@@ -86,12 +87,25 @@ const StudentLogin = () => {
 
     if (error) {
       toast.error(`Error fetching class data: ${error.message}`);
+      setIsLoading(false);
       return;
     }
 
     const { attendees = [] } = data;
+
+    // Check if the matriculation number already exists
+    const matricNumberExists = attendees.some(
+      (attendee) => attendee.matric_no === matricNumber.trim().toUpperCase()
+    );
+
+    if (matricNumberExists) {
+      toast.error("This matriculation number has already been registered.");
+      setIsLoading(false);
+      return;
+    }
+
     const newAttendee = {
-      matric_no: matricNumber.toUpperCase(),
+      matric_no: matricNumber.trim().toUpperCase(),
       name: name.toUpperCase(),
       timestamp: new Date().toISOString(),
     };
@@ -101,7 +115,7 @@ const StudentLogin = () => {
     const { error: updateError } = await supabase
       .from("classes")
       .update({ attendees: updatedAttendees })
-      .eq("course_id", courseId); // Corrected to use course_id
+      .eq("course_id", courseId);
 
     if (updateError) {
       toast.error(`Error marking attendance: ${updateError.message}`);
