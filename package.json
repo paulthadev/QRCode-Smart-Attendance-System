@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.45.3",
     "axios": "^1.7.7",
+    "file-saver": "^2.0.5",
     "iconsax-react": "^0.0.8",
     "leaflet": "^1.9.4",
     "qrcode.react": "^4.0.1",
@@ -22,7 +23,8 @@
     "react-leaflet": "^4.2.1",
     "react-qr-code": "^2.0.15",
     "react-responsive-modal": "^6.4.2",
-    "react-router-dom": "^6.26.1"
+    "react-router-dom": "^6.26.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
