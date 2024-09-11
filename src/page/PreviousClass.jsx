@@ -57,7 +57,10 @@ const PreviousClass = () => {
       <div className="flex">
         <Link to="/classDetails">
           <button className="btn btn-sm rounded-full bg-blue-500 border-none text-white">
-            <BiArrowBack /> Back
+            <span className="hidden xs:block">
+              <BiArrowBack />
+            </span>
+            Back
           </button>
         </Link>
 
