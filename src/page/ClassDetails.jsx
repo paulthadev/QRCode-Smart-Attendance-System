@@ -9,10 +9,12 @@ const ClassDetails = () => {
       <div className="flex ml-auto pt-8 pr-8">
         <LogoutButton />
       </div>
-      <div className="min-h-[80vh]  grid place-items-center">
-        <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
-          Welcome, {userDetails?.fullName}
-        </h2>
+      <div className="flex flex-col gap-y-10 justify-center h-[80vh] items-center ">
+        <div>
+          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
+            Welcome, {userDetails?.fullName}
+          </h2>
+        </div>
         <div className="flex gap-x-4">
           <Link
             className="btn capitalize text-black hover:text-white text-lg bg-transparent"
