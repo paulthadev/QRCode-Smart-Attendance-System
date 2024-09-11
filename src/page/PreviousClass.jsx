@@ -66,69 +66,93 @@ const PreviousClass = () => {
       </h2>
 
       {classes.length > 0 ? (
-        classes.map((classItem, index) => {
-          const formattedDate = new Date(classItem.date).toLocaleDateString();
-          const formattedTime = new Date(classItem.time).toLocaleTimeString(
-            [],
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          );
-
-          return (
-            <div key={classItem.id} className="grid mb-6 md:grid-cols-7">
-              <div className="w-12">
-                {" "}
-                {/* Adjust width here */}
-                <h2 className="font-bold text-black">S/N</h2>
-                <div className="text-neutral-700 text-sm md:text-base">
-                  {index + 1}
-                </div>
-              </div>
-              <div>
-                <h2 className="font-bold text-black">Course Code</h2>
-                <div className="text-neutral-700 text-sm md:text-base">
-                  {classItem.course_code}
-                </div>
-              </div>
-              <div>
-                <h2 className="font-bold text-black">Course Title</h2>
-                <div className="text-neutral-700 text-sm md:text-base">
-                  {classItem.course_title}
-                </div>
-              </div>
-              <div>
-                <h2 className="font-bold text-black">Date</h2>
-                <div className="text-neutral-700 text-sm md:text-base">{`${formattedDate}`}</div>
-              </div>
-
-              <div>
-                <h2 className="font-bold text-black">Time</h2>
-                <div className="text-neutral-700 text-sm md:text-base">{`${formattedTime}`}</div>
-              </div>
-              <div>
-                <h2 className="font-bold text-black">Attendance</h2>
-                <button
-                  onClick={() => handleViewAttendance(classItem)} // Handle modal open
-                  className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
-                >
-                  View List
-                </button>
-              </div>
-
-              <div>
-                <h2 className="font-bold text-black">QR Code</h2>
-                <button
-                  onClick={() => handleViewQRCode(classItem.qr_code)} // Handle QR code modal open
-                  className="btn capitalize btn-sm font-bold text-white bg-blue-500 border-none"
-                >
-                  Display
-                </button>
-              </div>
+        <>
+          {/* Headings */}
+          <div className="grid mb-6 md:grid-cols-7 gap-4 font-bold text-black">
+            <div className="w-12">
+              <h2>S/N</h2>
             </div>
-          );
-        })
+            <div>
+              <h2>Course Code</h2>
+            </div>
+            <div>
+              <h2>Course Title</h2>
+            </div>
+            <div>
+              <h2>Date</h2>
+            </div>
+            <div>
+              <h2>Time</h2>
+            </div>
+            <div>
+              <h2>Attendance</h2>
+            </div>
+            <div>
+              <h2>QR Code</h2>
+            </div>
+          </div>
+
+          {/* List of Classes */}
+          {classes.map((classItem, index) => {
+            const formattedDate = new Date(classItem.date).toLocaleDateString();
+            const formattedTime = new Date(classItem.time).toLocaleTimeString(
+              [],
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            );
+
+            return (
+              <div
+                key={classItem.id}
+                className="grid mb-6 md:grid-cols-7 gap-4"
+              >
+                <div className="w-12">
+                  <div className="text-neutral-700 text-sm md:text-base">
+                    {index + 1}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-neutral-700 text-sm md:text-base">
+                    {classItem.course_code}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-neutral-700 text-sm md:text-base">
+                    {classItem.course_title}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-neutral-700 text-sm md:text-base">
+                    {formattedDate}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-neutral-700 text-sm md:text-base">
+                    {formattedTime}
+                  </div>
+                </div>
+                <div>
+                  <button
+                    onClick={() => handleViewAttendance(classItem)} // Handle modal open
+                    className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
+                  >
+                    View List
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => handleViewQRCode(classItem.qr_code)} // Handle QR code modal open
+                    className="btn capitalize btn-sm font-bold text-white bg-blue-500 border-none"
+                  >
+                    Display
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </>
       ) : (
         <p className="text-center text-black">No previous classes found.</p>
       )}
