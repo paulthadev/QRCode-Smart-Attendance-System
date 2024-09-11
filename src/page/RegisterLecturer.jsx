@@ -128,7 +128,7 @@ const RegisterLecturer = () => {
             Continue with Google
           </button>
           <p className="mt-4 text-[#1E1E1E] text-center">
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
               className="text-[#000D46] font-semibold"
               to={"/loginLecturer"}
