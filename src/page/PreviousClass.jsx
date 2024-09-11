@@ -3,18 +3,23 @@ import { supabase } from "../utils/supabaseClient";
 import useUserDetails from "../hooks/useUserDetails";
 import { useEffect, useState } from "react";
 import AttendanceListModal from "../component/AttendanceListModal";
+import { Link } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 
 const PreviousClass = () => {
   const { userDetails } = useUserDetails();
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const lecturerId = userDetails?.lecturer_id;
 
   // Function to fetch classes based on lecturer_id
-  const classList = async () => {
-    if (!lecturerId) return; // Prevent fetching without lecturer_id
+  const fetchClasses = async () => {
+    if (!lecturerId) return;
+
+    setIsLoading(true);
 
     const { data, error } = await supabase
       .from("classes")
@@ -23,15 +28,16 @@ const PreviousClass = () => {
 
     if (error) {
       toast.error(`Error fetching class data: ${error.message}`);
-      return;
+    } else {
+      setClasses(data);
     }
 
-    setClasses(data);
+    setIsLoading(false); // Ensure loading state is reset in both cases
   };
 
   // Fetch classes when component mounts or lecturerId changes
   useEffect(() => {
-    classList();
+    fetchClasses();
   }, [lecturerId]);
 
   // Function to handle opening the attendance modal
@@ -48,89 +54,108 @@ const PreviousClass = () => {
 
   return (
     <section className="pb-20 pt-8 px-6 max-w-7xl mx-auto">
-      <h2 className="text-center font-bold text-2xl mb-6 text-black capitalize">
-        List of Previous Classes
-      </h2>
+      <div className="flex">
+        <Link to="/classDetails">
+          <button className="btn btn-xs bg-blue-500 border-none text-white">
+            <BiArrowBack /> Back
+          </button>
+        </Link>
 
-      {classes.length > 0 ? (
-        <>
-          {/* Headings */}
-          <div className="grid mb-6 md:grid-cols-6 gap-4 font-bold text-black">
-            <div className="w-12">
-              <h2>S/N</h2>
-            </div>
-            <div>
-              <h2>Course Code</h2>
-            </div>
-            <div>
-              <h2>Course Title</h2>
-            </div>
-            <div>
-              <h2>Date</h2>
-            </div>
-            <div>
-              <h2>Time</h2>
-            </div>
-            <div>
-              <h2>Attendance</h2>
-            </div>
+        <h2 className="text-center mx-auto font-bold text-2xl mb-6 text-black">
+          List of Previous Classes
+        </h2>
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center text-black items-center h-32">
+          <div className="flex items-center justify-center">
+            <div className="loading loading-spinner bg-blue-500"></div>
           </div>
-
-          {/* List of Classes */}
-          {classes.map((classItem, index) => {
-            const formattedDate = new Date(classItem.date).toLocaleDateString();
-            const formattedTime = new Date(classItem.time).toLocaleTimeString(
-              [],
-              {
-                hour: "2-digit",
-                minute: "2-digit",
-              }
-            );
-
-            return (
-              <div
-                key={classItem.id}
-                className="grid mb-6 md:grid-cols-6 gap-4"
-              >
+        </div>
+      ) : (
+        <>
+          {classes.length > 0 ? (
+            <div className="max-h-[600px] overflow-y-auto">
+              {/* Headings */}
+              <div className="grid mb-6 md:grid-cols-6 gap-4 font-bold text-black">
                 <div className="w-12">
-                  <div className="text-neutral-700 text-sm md:text-base">
-                    {index + 1}
-                  </div>
+                  <h2>S/N</h2>
                 </div>
                 <div>
-                  <div className="text-neutral-700 text-sm md:text-base">
-                    {classItem.course_code}
-                  </div>
+                  <h2>Course Code</h2>
                 </div>
                 <div>
-                  <div className="text-neutral-700 text-sm md:text-base">
-                    {classItem.course_title}
-                  </div>
+                  <h2>Course Title</h2>
                 </div>
                 <div>
-                  <div className="text-neutral-700 text-sm md:text-base">
-                    {formattedDate}
-                  </div>
+                  <h2>Date</h2>
                 </div>
                 <div>
-                  <div className="text-neutral-700 text-sm md:text-base">
-                    {formattedTime}
-                  </div>
+                  <h2>Time</h2>
                 </div>
                 <div>
-                  <button
-                    onClick={() => handleViewAttendance(classItem)} // Handle modal open
-                    className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
-                  >
-                    View List
-                  </button>
+                  <h2>Attendance</h2>
                 </div>
               </div>
-            );
-          })}
+
+              {/* List of Classes */}
+              {classes.map((classItem, index) => {
+                const formattedDate = new Date(
+                  classItem.date
+                ).toLocaleDateString();
+                const formattedTime = new Date(
+                  classItem.time
+                ).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+
+                return (
+                  <div
+                    key={classItem.id}
+                    className="grid mb-6 md:grid-cols-6 gap-4"
+                  >
+                    <div className="w-12">
+                      <div className="text-neutral-700 text-sm md:text-base">
+                        {index + 1}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-700 text-sm md:text-base">
+                        {classItem.course_code}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-700 text-sm md:text-base">
+                        {classItem.course_title}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-700 text-sm md:text-base">
+                        {formattedDate}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-700 text-sm md:text-base">
+                        {formattedTime}
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => handleViewAttendance(classItem)} // Handle modal open
+                        className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
+                      >
+                        View List
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-black">No previous classes found.</p>
+          )}
         </>
-      ) : (
-        <p className="text-center text-black">No previous classes found.</p>
       )}
 
       {/* Attendance Modal */}

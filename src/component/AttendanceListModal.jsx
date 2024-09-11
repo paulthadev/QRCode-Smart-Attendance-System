@@ -62,7 +62,7 @@ const AttendanceListModal = ({ isOpen, selectedClass, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg relative">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg relative h-[80vh] overflow-hidden">
         <h2 className="text-xl font-bold underline mb-4 text-black">
           Attendance List
         </h2>
@@ -89,35 +89,46 @@ const AttendanceListModal = ({ isOpen, selectedClass, onClose }) => {
           </button>
         </div>
 
-        {selectedClass.attendees && selectedClass.attendees.length > 0 ? (
-          selectedClass.attendees.map((attendee, index) => {
-            const formattedTimestamp = new Date(
-              attendee.timestamp
-            ).toLocaleString([], {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            });
+        {/* List container */}
+        <div className="overflow-y-auto max-h-[60vh] pr-2 scrollbar-hidden">
+          {selectedClass.attendees && selectedClass.attendees.length > 0 ? (
+            selectedClass.attendees.map((attendee, index) => {
+              const formattedTimestamp = new Date(
+                attendee.timestamp
+              ).toLocaleString([], {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
 
-            return (
-              <div key={index} className="mb-4 border-b pb-2">
-                <p className="text-black uppercase text-sm font-semibold">
-                  Name: {attendee.name}
-                </p>
-                <p className="text-black uppercase text-sm font-semibold">
-                  Matric No: {attendee.matric_no}
-                </p>
-                <p className="text-gray-800 text-sm">
-                  Attended at: {formattedTimestamp}
-                </p>
-              </div>
-            );
-          })
-        ) : (
-          <p>No attendees found for this class.</p>
-        )}
+              return (
+                <div
+                  key={index}
+                  className="mb-4 border-b pb-2 flex items-start"
+                >
+                  <span className="text-black text-sm font-semibold mr-2">
+                    {index + 1}.
+                  </span>
+                  <div>
+                    <p className="text-black uppercase text-sm font-semibold">
+                      Name: {attendee.name}
+                    </p>
+                    <p className="text-black uppercase text-sm font-semibold">
+                      Matric No: {attendee.matric_no}
+                    </p>
+                    <p className="text-gray-800 text-sm">
+                      Attended At: {formattedTimestamp}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p>No attendees found for this class.</p>
+          )}
+        </div>
       </div>
     </div>
   );
