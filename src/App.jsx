@@ -5,6 +5,8 @@ import ClassSchedule from "./page/ClassSchedule";
 import LandingPage from "./page/LandingPage";
 import Attendance from "./page/Attendance";
 import SuccessPage from "./page/SuccessPage";
+import ClassDetails from "./page/ClassDetails";
+import PreviousClass from "./page/PreviousClass";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,10 @@ const router = createBrowserRouter([
     element: <RegisterLecturer />,
   },
   {
+    path: "/classDetails",
+    element: <ClassDetails />,
+  },
+  {
     path: "/attendance",
     element: <Attendance />,
   },
@@ -27,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: "/classSchedule",
     element: <ClassSchedule />,
+  },
+  {
+    path: "/previousClass",
+    element: <PreviousClass />,
   },
   {
     path: "/success",

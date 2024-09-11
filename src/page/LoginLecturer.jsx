@@ -31,7 +31,7 @@ const LoginLecturer = () => {
 
       // Redirect to the class schedule
       toast.success("Login successful");
-      navigate("/classSchedule");
+      navigate("/classDetails");
     } catch (error) {
       setError(error.error_description || error.message);
       toast.error(`${error.error_description || error.message}`);
