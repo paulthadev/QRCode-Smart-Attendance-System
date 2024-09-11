@@ -1,13 +1,24 @@
 import { Link } from "react-router-dom";
 import LogoutButton from "../component/LogoutButton";
+import useUserDetails from "../hooks/useUserDetails";
+import logo from "../../public/trackAS.png";
 
 const ClassDetails = () => {
+  const { userDetails } = useUserDetails();
   return (
-    <div className="flex  flex-col ">
+    <div className="flex flex-col ">
       <div className="flex ml-auto pt-8 pr-8">
         <LogoutButton />
       </div>
-      <div className="min-h-[80vh] grid place-items-center">
+      <div className="flex flex-col gap-y-10 justify-center h-[80vh] items-center ">
+        <div>
+          <div className="items-center flex self-center justify-center">
+            <img src={logo} alt="logo" />
+          </div>
+          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
+            Welcome, {userDetails?.fullName}
+          </h2>
+        </div>
         <div className="flex gap-x-4">
           <Link
             className="btn capitalize text-black hover:text-white text-lg bg-transparent"

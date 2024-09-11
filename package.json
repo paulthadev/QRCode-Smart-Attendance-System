@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.45.3",
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "iconsax-react": "^0.0.8",
     "leaflet": "^1.9.4",

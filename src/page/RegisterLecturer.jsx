@@ -67,12 +67,14 @@ const RegisterLecturer = () => {
       <div className="grid md:grid-cols-2">
         <form
           onSubmit={handleRegister}
-          className="py-20 px-6 lg:px-[133px] overflow-scroll h-[100vh]"
+          className="px-6 lg:px-[133px] overflow-scroll  h-[100vh]"
         >
-          <img src={Logo} alt="astrack logo" />
-          <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
-            Create Account
-          </h2>
+          <div className="flex flex-col items-center">
+            <img src={Logo} alt="logo" className="w-32 mt-8" />
+            <h2 className="text-[#000D46] font-bold text-2xl mt-1 mb-2">
+              Create Account
+            </h2>
+          </div>
           <div className="grid gap-y-4">
             <Input
               type="text"
@@ -124,11 +126,8 @@ const RegisterLecturer = () => {
             {isLoading ? "Creating Account..." : "Create Account"}
           </button>
 
-          <button className="btn bg-white btn-block mt-6 text-black hover:bg-transparent">
-            Continue with Google
-          </button>
           <p className="mt-4 text-[#1E1E1E] text-center">
-            Already have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               className="text-[#000D46] font-semibold"
               to={"/loginLecturer"}

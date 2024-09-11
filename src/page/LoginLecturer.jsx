@@ -44,11 +44,13 @@ const LoginLecturer = () => {
     <section>
       <div className="grid md:grid-cols-2">
         <div className="px-6 lg:px-[133px] overflow-scroll h-[100vh] pb-8">
-          <img src={Logo} alt="login logo" className="my-24" />
-          <form onSubmit={handleLogin}>
-            <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
+          <div className="flex flex-col mt-5 items-center">
+            <img src={Logo} alt="login logo" className="w-32" />
+            <h2 className="text-[#000D46] font-bold text-2xl mt-2 mb-6">
               Welcome Back!
             </h2>
+          </div>
+          <form onSubmit={handleLogin}>
             <div className="grid gap-y-4">
               <Input
                 type="email"
@@ -70,9 +72,6 @@ const LoginLecturer = () => {
 
             {error && <p className="text-red-500">{error}</p>}
 
-            <p className="mt-6 text-[#000D46] capitalize text-sm text-end">
-              forgot password
-            </p>
             <button
               className="btn bg-[#000D46] disabled:bg-[#000D46] disabled:cursor-not-allowed text-white btn-block mt-6 text-base font-bold"
               type="submit"
@@ -82,29 +81,16 @@ const LoginLecturer = () => {
             </button>
           </form>
 
-          {/* Social Login */}
-          <div>
-            <div className="flex mt-6 items-center gap-3 justify-center">
-              <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
-              <p className="text-[#1E1E1E]">login with</p>
-              <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
-            </div>
-
-            <button className="btn bg-white btn-block mt-6 text-black hover:bg-transparent">
-              Continue with Google
-            </button>
-            <p className="mt-4 text-[#1E1E1E] text-center">
-              Don&apos;t have an account?{" "}
-              <Link
-                className="text-[#000D46] font-semibold"
-                to={"/registerLecturer"}
-              >
-                Register Now
-              </Link>
-            </p>
-          </div>
+          <p className="mt-3 text-[#1E1E1E] text-center">
+            Don&apos;t have an account?{" "}
+            <Link
+              className="text-[#000D46] font-semibold"
+              to={"/registerLecturer"}
+            >
+              Register Now
+            </Link>
+          </p>
         </div>
-        {/* End Social Login */}
 
         {/* Start of  Side Image (only shown on Large screen) */}
         <div>

@@ -57,7 +57,10 @@ const PreviousClass = () => {
       <div className="flex">
         <Link to="/classDetails">
           <button className="btn btn-sm rounded-full bg-blue-500 border-none text-white">
-            <BiArrowBack /> Back
+            <span className="hidden xs:block">
+              <BiArrowBack />
+            </span>
+            Back
           </button>
         </Link>
 
@@ -76,28 +79,21 @@ const PreviousClass = () => {
         <>
           {classes.length > 0 ? (
             <div className="max-h-[600px] overflow-y-auto">
-              {/* Headings */}
-              <div className="grid mb-6 md:grid-cols-6 gap-4 font-bold text-black">
-                <div className="w-12">
-                  <h2>S/N</h2>
-                </div>
-                <div>
-                  <h2>Course Code</h2>
-                </div>
-                <div>
-                  <h2>Course Title</h2>
-                </div>
-                <div>
-                  <h2>Date</h2>
-                </div>
-                <div>
-                  <h2>Time</h2>
-                </div>
-                <div>
-                  <h2>Attendance</h2>
-                </div>
-              </div>
+              <div className=" flex overflow-scroll gap-4  md:grid md:grid-cols-6 mb-6">
+                <h2 className="font-bold text-black text-[0.7rem]">S/N</h2>
+                <h2 className="font-bold text-black text-[0.7rem]">
+                  Course Code
+                </h2>
+                <h2 className="font-bold text-black text-[0.7rem]">
+                  Course Title
+                </h2>
+                <h2 className="font-bold text-black text-[0.7rem]">Date</h2>
+                <h2 className="font-bold text-black text-[0.7rem]">Time</h2>
 
+                <h2 className="font-bold text-black text-[0.7rem]">
+                  Attendance
+                </h2>
+              </div>
               {/* List of Classes */}
               {classes.map((classItem, index) => {
                 const formattedDate = new Date(
@@ -113,34 +109,35 @@ const PreviousClass = () => {
                 return (
                   <div
                     key={classItem.id}
-                    className="grid mb-6 md:grid-cols-6 gap-4"
+                    className="flex overflow-scroll mb-8 md:grid md:grid-cols-6 gap-4"
                   >
-                    <div className="w-12">
+                    <div className="flex gap-4 md:flex-col">
                       <div className="text-neutral-700 text-sm md:text-base">
                         {index + 1}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
                       <div className="text-neutral-700 text-sm md:text-base">
                         {classItem.course_code}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
                       <div className="text-neutral-700 text-sm md:text-base">
                         {classItem.course_title}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
                       <div className="text-neutral-700 text-sm md:text-base">
                         {formattedDate}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
                       <div className="text-neutral-700 text-sm md:text-base">
                         {formattedTime}
                       </div>
                     </div>
-                    <div>
+
+                    <div className="flex gap-4 md:flex-col">
                       <button
                         onClick={() => handleViewAttendance(classItem)} // Handle modal open
                         className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
