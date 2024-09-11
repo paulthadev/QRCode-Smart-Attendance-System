@@ -5,6 +5,8 @@ import Input from "../component/Input";
 import { supabase } from "../utils/supabaseClient";
 import toast from "react-hot-toast";
 import Spinner from "../component/Spinner";
+import dayjs from "dayjs";
+import logo from "../../public/trackAS.png";
 
 const StudentLogin = () => {
   const location = useLocation();
@@ -20,7 +22,6 @@ const StudentLogin = () => {
   const [name, setName] = useState("");
 
   const courseId = queryParams.get("courseId");
-  const time = queryParams.get("time");
   const courseCode = queryParams.get("courseCode");
   const lat = parseFloat(queryParams.get("lat"));
   const lng = parseFloat(queryParams.get("lng"));
@@ -55,7 +56,7 @@ const StudentLogin = () => {
             setUserDistance(distance);
 
             // Check if the distance is within 20 meters
-            setIsWithinRange(distance <= 216457.79);
+            setIsWithinRange(distance <= 20);
           },
           (error) => {
             toast.error(`Error getting user location., ${error.message}`);
@@ -133,34 +134,41 @@ const StudentLogin = () => {
   };
 
   return (
-    <section className="studentLogin h-[100vh] grid place-items-center ">
-      <div className="bg-white px-6 py-4 md:px-16  rounded-xl">
+    <section className="studentLogin h-screen grid place-items-center ">
+      <div className="bg-white px-6 py-4 md:px-16 max-w-3xl  rounded-xl">
+        <div className="items-center flex self-center justify-center">
+          <img src={logo} alt="logo" />
+        </div>
         <h2 className="text-[2.5rem] text-[#000D46] text-center font-bold mb-2">
           TrackAS
         </h2>
         {classDetails && (
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-[#000D46] text-lg font-bold">
+              <p className="text-[#000D46] font-bold">
                 Title {classDetails.course_title}
               </p>
 
-              <p className="text-[#000D46] text-lg font-bold">
-                Code: {courseCode}
-              </p>
+              <p className="text-[#000D46]  font-bold">Code: {courseCode}</p>
 
               <p>
-                <p className="text-[#000D46] text-lg font-bold">
+                <p className="text-[#000D46]  font-bold">
                   Venue: {classDetails.location_name}
                 </p>
-                <p className="text-[#000D46] text-lg font-bold">
-                  Date: {classDetails.date}
+                <p className="text-[#000D46]  font-bold">
+                  Date: {dayjs(classDetails.date).format("DD MMMM, YYYY")}
                 </p>
-                <p className="text-[#000D46] text-lg font-bold">Time: {time}</p>
-                <p className="text-[#000D46] text-lg font-bold">
+                <p className="text-[#000D46]  font-bold">
+                  Time:{" "}
+                  {new Date(classDetails.time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </p>
+                <p className="text-[#000D46] mb-2 text-lg font-bold">
                   Note: {classDetails.note}
                 </p>
-                <br />
                 Distance to Lecture Venue:{" "}
                 {userDistance
                   ? `${userDistance.toFixed(2)} meters`
@@ -193,7 +201,7 @@ const StudentLogin = () => {
               {isLoading ? <Spinner /> : "Mark Attendance"}
             </button>
           ) : (
-            <p>
+            <p className="text-xs text-red-500 pt-2">
               You must be within 20 meters of the lecture venue to register.
             </p>
           )}
