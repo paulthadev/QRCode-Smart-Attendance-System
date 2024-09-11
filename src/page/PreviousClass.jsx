@@ -56,7 +56,7 @@ const PreviousClass = () => {
     <section className="pb-20 pt-8 px-6 max-w-7xl mx-auto">
       <div className="flex">
         <Link to="/classDetails">
-          <button className="btn btn-xs bg-blue-500 border-none text-white">
+          <button className="btn btn-sm rounded-full bg-blue-500 border-none text-white">
             <BiArrowBack /> Back
           </button>
         </Link>

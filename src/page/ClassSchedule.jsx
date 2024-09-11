@@ -8,7 +8,7 @@ import { supabase } from "../utils/supabaseClient";
 import useUserDetails from "../hooks/useUserDetails";
 import { QRCodeSVG } from "qrcode.react";
 import toast from "react-hot-toast";
-import LogoutButton from "../component/LogoutButton";
+import { Link } from "react-router-dom";
 
 const VERCEL_URL = import.meta.env.VITE_VERCEL_URL;
 
@@ -119,9 +119,12 @@ const ClassSchedule = () => {
   return (
     <div className="flex flex-col md:flex-row max-h-[90vh]  bg-gray-100 ">
       <div className="w-full md:w-1/2 p-4 md:p-4 flex items-start justify-center relative">
-        <div className="absolute top-5 right-9">
-          <LogoutButton />
-        </div>
+        <Link to="/classDetails">
+          <button className="btn btn-sm rounded-full bg-blue-500 border-none text-white">
+            Back
+          </button>
+        </Link>
+
         <div className="w-full max-w-2xl h-[90vh] overflow-y-auto">
           <div className="items-center flex self-center justify-center">
             <img src={logo} alt="logo" />
