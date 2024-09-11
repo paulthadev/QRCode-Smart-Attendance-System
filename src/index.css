@@ -9,6 +9,7 @@ body {
 
 .studentLogin {
     background-image: url('/studentBG.jpg');
+    background-size: cover;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
