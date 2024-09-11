@@ -44,11 +44,13 @@ const LoginLecturer = () => {
     <section>
       <div className="grid md:grid-cols-2">
         <div className="px-6 lg:px-[133px] overflow-scroll h-[100vh] pb-8">
-          <img src={Logo} alt="login logo" className="my-24" />
-          <form onSubmit={handleLogin}>
-            <h2 className="text-[#000D46] font-bold text-2xl mt-5 mb-7">
+          <div className="flex flex-col mt-5 items-center">
+            <img src={Logo} alt="login logo" className="w-32" />
+            <h2 className="text-[#000D46] font-bold text-2xl mt-2 mb-6">
               Welcome Back!
             </h2>
+          </div>
+          <form onSubmit={handleLogin}>
             <div className="grid gap-y-4">
               <Input
                 type="email"
@@ -79,7 +81,7 @@ const LoginLecturer = () => {
             </button>
           </form>
 
-          <p className="mt-4 text-[#1E1E1E] text-center">
+          <p className="mt-3 text-[#1E1E1E] text-center">
             Don&apos;t have an account?{" "}
             <Link
               className="text-[#000D46] font-semibold"
