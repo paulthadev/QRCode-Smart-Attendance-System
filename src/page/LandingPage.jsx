@@ -13,8 +13,6 @@ const LandingPage = () => {
             <button className=" btn btn-primary">Register</button>
           </Link>
 
-          {/* <br /> */}
-
           <Link to="/loginLecturer">
             <button className="btn  btn-secondary ">Login</button>
           </Link>

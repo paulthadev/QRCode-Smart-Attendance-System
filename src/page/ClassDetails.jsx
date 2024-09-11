@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import LogoutButton from "../component/LogoutButton";
 import useUserDetails from "../hooks/useUserDetails";
+import logo from "../../public/trackAS.png";
 
 const ClassDetails = () => {
   const { userDetails } = useUserDetails();
@@ -11,6 +12,9 @@ const ClassDetails = () => {
       </div>
       <div className="flex flex-col gap-y-10 justify-center h-[80vh] items-center ">
         <div>
+          <div className="items-center flex self-center justify-center">
+            <img src={logo} alt="logo" />
+          </div>
           <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
             Welcome, {userDetails?.fullName}
           </h2>
