@@ -2,7 +2,7 @@
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 
-const QRCodeModal = ({ isOpen, onClose, qrCodeData }) => {
+const CreatedClassesQRCodeModal = ({ isOpen, onClose, qrCodeData }) => {
   return (
     <Modal open={isOpen} onClose={onClose} center>
       <h2 className="text-center font-bold text-xl mb-4">QR Code</h2>
@@ -13,4 +13,4 @@ const QRCodeModal = ({ isOpen, onClose, qrCodeData }) => {
   );
 };
 
-export default QRCodeModal;
+export default CreatedClassesQRCodeModal;

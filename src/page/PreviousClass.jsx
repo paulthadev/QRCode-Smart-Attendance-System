@@ -3,12 +3,15 @@ import { supabase } from "../utils/supabaseClient";
 import useUserDetails from "../hooks/useUserDetails";
 import { useEffect, useState } from "react";
 import AttendanceListModal from "../component/AttendanceListModal";
+import CreatedClassesQRCodeModal from "../component/CreatedClassesQRCodeModal";
 
 const PreviousClass = () => {
   const { userDetails } = useUserDetails();
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null); // State to hold selected class for modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isQRCodeModalOpen, setIsQRCodeModalOpen] = useState(false); // QR Code Modal visibility state
+  const [qrCodeData, setQRCodeData] = useState(""); // QR Code data
   const lecturerId = userDetails?.lecturer_id;
 
   // Function to fetch classes based on lecturer_id
@@ -33,16 +36,27 @@ const PreviousClass = () => {
     classList();
   }, [lecturerId]);
 
-  // Function to handle opening the modal and setting the selected class
+  // Function to handle opening the attendance modal
   const handleViewAttendance = (classItem) => {
     setSelectedClass(classItem);
     setIsModalOpen(true); // Open the modal
   };
 
-  // Close the modal
+  // Function to handle opening the QR code modal
+  const handleViewQRCode = (qrCode) => {
+    setQRCodeData(qrCode);
+    setIsQRCodeModalOpen(true); // Open QR code modal
+  };
+
+  // Close modals
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedClass(null); // Clear selected class
+  };
+
+  const handleCloseQRCodeModal = () => {
+    setIsQRCodeModalOpen(false);
+    setQRCodeData(""); // Clear QR code data
   };
 
   return (
@@ -64,7 +78,9 @@ const PreviousClass = () => {
 
           return (
             <div key={classItem.id} className="grid mb-6 md:grid-cols-7">
-              <div>
+              <div className="w-12">
+                {" "}
+                {/* Adjust width here */}
                 <h2 className="font-bold text-black">S/N</h2>
                 <div className="text-neutral-700 text-sm md:text-base">
                   {index + 1}
@@ -103,7 +119,10 @@ const PreviousClass = () => {
 
               <div>
                 <h2 className="font-bold text-black">QR Code</h2>
-                <button className="btn capitalize btn-sm font-bold text-white bg-blue-500 border-none">
+                <button
+                  onClick={() => handleViewQRCode(classItem.qr_code)} // Handle QR code modal open
+                  className="btn capitalize btn-sm font-bold text-white bg-blue-500 border-none"
+                >
                   Display
                 </button>
               </div>
@@ -119,6 +138,13 @@ const PreviousClass = () => {
         isOpen={isModalOpen}
         selectedClass={selectedClass}
         onClose={handleCloseModal}
+      />
+
+      {/* QR Code Modal */}
+      <CreatedClassesQRCodeModal
+        isOpen={isQRCodeModalOpen}
+        onClose={handleCloseQRCodeModal}
+        qrCodeData={qrCodeData}
       />
     </section>
   );
