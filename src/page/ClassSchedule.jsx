@@ -130,9 +130,6 @@ const ClassSchedule = () => {
             <img src={logo} alt="logo" />
           </div>
 
-          <h2 className="lg:text-4xl text-neutral-800 md:text-2xl text-xl font-bold mt-2 text-center">
-            Welcome, {userDetails?.fullName}
-          </h2>
           <p className="text-sm text-neutral-600 text-center mb-1">
             Schedule a class using the form below
           </p>
