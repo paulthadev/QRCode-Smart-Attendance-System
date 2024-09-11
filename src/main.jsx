@@ -6,6 +6,6 @@ import { Toaster } from "react-hot-toast";
 createRoot(document.getElementById("root")).render(
   <>
     <App />
-    <Toaster />s
+    <Toaster />
   </>
 );
