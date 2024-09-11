@@ -52,7 +52,7 @@ const PreviousClass = () => {
       </h2>
 
       {classes.length > 0 ? (
-        classes.map((classItem) => {
+        classes.map((classItem, index) => {
           const formattedDate = new Date(classItem.date).toLocaleDateString();
           const formattedTime = new Date(classItem.time).toLocaleTimeString(
             [],
@@ -63,7 +63,13 @@ const PreviousClass = () => {
           );
 
           return (
-            <div key={classItem.id} className="grid mb-6 md:grid-cols-6">
+            <div key={classItem.id} className="grid mb-6 md:grid-cols-7">
+              <div>
+                <h2 className="font-bold text-black">S/N</h2>
+                <div className="text-neutral-700 text-sm md:text-base">
+                  {index + 1}
+                </div>
+              </div>
               <div>
                 <h2 className="font-bold text-black">Course Code</h2>
                 <div className="text-neutral-700 text-sm md:text-base">
