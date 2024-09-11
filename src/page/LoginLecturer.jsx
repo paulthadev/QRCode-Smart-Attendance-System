@@ -70,9 +70,6 @@ const LoginLecturer = () => {
 
             {error && <p className="text-red-500">{error}</p>}
 
-            <p className="mt-6 text-[#000D46] capitalize text-sm text-end">
-              forgot password
-            </p>
             <button
               className="btn bg-[#000D46] disabled:bg-[#000D46] disabled:cursor-not-allowed text-white btn-block mt-6 text-base font-bold"
               type="submit"
@@ -82,29 +79,16 @@ const LoginLecturer = () => {
             </button>
           </form>
 
-          {/* Social Login */}
-          <div>
-            <div className="flex mt-6 items-center gap-3 justify-center">
-              <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
-              <p className="text-[#1E1E1E]">login with</p>
-              <div className="h-[0.0625rem] w-[7.9375rem] bg-black"></div>
-            </div>
-
-            <button className="btn bg-white btn-block mt-6 text-black hover:bg-transparent">
-              Continue with Google
-            </button>
-            <p className="mt-4 text-[#1E1E1E] text-center">
-              Don&apos;t have an account?{" "}
-              <Link
-                className="text-[#000D46] font-semibold"
-                to={"/registerLecturer"}
-              >
-                Register Now
-              </Link>
-            </p>
-          </div>
+          <p className="mt-4 text-[#1E1E1E] text-center">
+            Don&apos;t have an account?{" "}
+            <Link
+              className="text-[#000D46] font-semibold"
+              to={"/registerLecturer"}
+            >
+              Register Now
+            </Link>
+          </p>
         </div>
-        {/* End Social Login */}
 
         {/* Start of  Side Image (only shown on Large screen) */}
         <div>
