@@ -126,8 +126,8 @@ const RegisterLecturer = () => {
             {isLoading ? "Creating Account..." : "Create Account"}
           </button>
 
-          <p className="mt-4 text-[#1E1E1E] text-center">
-            Don&apos;t have an account?{" "}
+          <p className="my-4 text-[#1E1E1E] text-center">
+            Already have an account?{" "}
             <Link
               className="text-[#000D46] font-semibold"
               to={"/loginLecturer"}
