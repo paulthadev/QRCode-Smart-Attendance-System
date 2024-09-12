@@ -76,6 +76,21 @@ const PreviousClass = () => {
         <>
           {classes.length > 0 ? (
             <div className="max-h-[600px] overflow-y-auto">
+              <div className=" flex overflow-scroll gap-4  md:grid md:grid-cols-6 mb-6">
+                <h2 className="font-bold text-black text-[0.7rem]">S/N</h2>
+                <h2 className="font-bold text-black text-[0.7rem]">
+                  Course Code
+                </h2>
+                <h2 className="font-bold text-black text-[0.7rem]">
+                  Course Title
+                </h2>
+                <h2 className="font-bold text-black text-[0.7rem]">Date</h2>
+                <h2 className="font-bold text-black text-[0.7rem]">Time</h2>
+
+                <h2 className="font-bold text-black text-[0.7rem]">
+                  Attendance
+                </h2>
+              </div>
               {/* List of Classes */}
               {classes.map((classItem, index) => {
                 const formattedDate = new Date(
@@ -91,46 +106,35 @@ const PreviousClass = () => {
                 return (
                   <div
                     key={classItem.id}
-                    className="grid mb-6 md:grid-cols-6 gap-4"
+                    className="flex overflow-scroll mb-8 md:grid md:grid-cols-6 gap-4"
                   >
                     <div className="flex gap-4 md:flex-col">
-                      <h2 className="font-bold text-black">S/N</h2>
                       <div className="text-neutral-700 text-sm md:text-base">
                         {index + 1}
                       </div>
                     </div>
                     <div className="flex gap-4 md:flex-col">
-                      <h2 className="font-bold text-black">Course Code</h2>
-
                       <div className="text-neutral-700 text-sm md:text-base">
                         {classItem.course_code}
                       </div>
                     </div>
                     <div className="flex gap-4 md:flex-col">
-                      <h2 className="font-bold text-black">Course Title</h2>
-
                       <div className="text-neutral-700 text-sm md:text-base">
                         {classItem.course_title}
                       </div>
                     </div>
                     <div className="flex gap-4 md:flex-col">
-                      <h2 className="font-bold text-black">Date</h2>
-
                       <div className="text-neutral-700 text-sm md:text-base">
                         {formattedDate}
                       </div>
                     </div>
                     <div className="flex gap-4 md:flex-col">
-                      <h2 className="font-bold text-black">Time</h2>
-
                       <div className="text-neutral-700 text-sm md:text-base">
                         {formattedTime}
                       </div>
                     </div>
 
                     <div className="flex gap-4 md:flex-col">
-                      <h2 className="font-bold text-black">Attendance</h2>
-
                       <button
                         onClick={() => handleViewAttendance(classItem)} // Handle modal open
                         className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
