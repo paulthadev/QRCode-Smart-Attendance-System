@@ -4,6 +4,7 @@ import Input from "../component/Input";
 import Logo from "/trackAS.png";
 import registerImg from "/registerImg.jpg";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const RegisterLecturer = () => {
   const [fullName, setFullName] = useState("");
@@ -40,9 +41,7 @@ const RegisterLecturer = () => {
 
       if (authError) throw authError;
 
-      console.log("Auth signup successful:", authData);
-
-      // After successful signup, insert lecturer details into a custom 'lecturers' table
+      // After successful signup, insert lecturer details into the 'lecturers' table
       const { data: insertData, error: insertError } = await supabase
         .from("lecturers")
         .insert({
@@ -53,9 +52,7 @@ const RegisterLecturer = () => {
 
       if (insertError) throw insertError;
 
-      console.log("Lecturer added to database:", insertData);
-
-      alert("Registration successful!");
+      toast.success("Registration successful!");
       navigate("/loginLecturer");
     } catch (error) {
       console.error("Registration error:", error);
