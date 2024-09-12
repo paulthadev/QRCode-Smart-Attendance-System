@@ -76,28 +76,6 @@ const PreviousClass = () => {
         <>
           {classes.length > 0 ? (
             <div className="max-h-[600px] overflow-y-auto">
-              {/* Headings */}
-              <div className="grid mb-6 md:grid-cols-6 gap-4 font-bold text-black">
-                <div className="w-12">
-                  <h2>S/N</h2>
-                </div>
-                <div>
-                  <h2>Course Code</h2>
-                </div>
-                <div>
-                  <h2>Course Title</h2>
-                </div>
-                <div>
-                  <h2>Date</h2>
-                </div>
-                <div>
-                  <h2>Time</h2>
-                </div>
-                <div>
-                  <h2>Attendance</h2>
-                </div>
-              </div>
-
               {/* List of Classes */}
               {classes.map((classItem, index) => {
                 const formattedDate = new Date(
@@ -115,32 +93,44 @@ const PreviousClass = () => {
                     key={classItem.id}
                     className="grid mb-6 md:grid-cols-6 gap-4"
                   >
-                    <div className="w-12">
+                    <div className="flex gap-4 md:flex-col">
+                      <h2 className="font-bold text-black">S/N</h2>
                       <div className="text-neutral-700 text-sm md:text-base">
                         {index + 1}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
+                      <h2 className="font-bold text-black">Course Code</h2>
+
                       <div className="text-neutral-700 text-sm md:text-base">
                         {classItem.course_code}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
+                      <h2 className="font-bold text-black">Course Title</h2>
+
                       <div className="text-neutral-700 text-sm md:text-base">
                         {classItem.course_title}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
+                      <h2 className="font-bold text-black">Date</h2>
+
                       <div className="text-neutral-700 text-sm md:text-base">
                         {formattedDate}
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-4 md:flex-col">
+                      <h2 className="font-bold text-black">Time</h2>
+
                       <div className="text-neutral-700 text-sm md:text-base">
                         {formattedTime}
                       </div>
                     </div>
-                    <div>
+
+                    <div className="flex gap-4 md:flex-col">
+                      <h2 className="font-bold text-black">Attendance</h2>
+
                       <button
                         onClick={() => handleViewAttendance(classItem)} // Handle modal open
                         className="btn capitalize btn-sm font-bold text-white bg-green-500 border-none"
