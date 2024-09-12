@@ -77,17 +77,23 @@ const PreviousClass = () => {
           {classes.length > 0 ? (
             <div className="max-h-[600px] overflow-y-auto">
               <div className=" flex overflow-scroll gap-4  md:grid md:grid-cols-6 mb-6">
-                <h2 className="font-bold text-black text-[0.7rem]">S/N</h2>
-                <h2 className="font-bold text-black text-[0.7rem]">
+                <h2 className="font-bold text-black text-[0.7rem] md:text-base">
+                  S/N
+                </h2>
+                <h2 className="font-bold text-black text-[0.7rem] md:text-base">
                   Course Code
                 </h2>
-                <h2 className="font-bold text-black text-[0.7rem]">
+                <h2 className="font-bold text-black text-[0.7rem] md:text-base">
                   Course Title
                 </h2>
-                <h2 className="font-bold text-black text-[0.7rem]">Date</h2>
-                <h2 className="font-bold text-black text-[0.7rem]">Time</h2>
+                <h2 className="font-bold text-black text-[0.7rem] md:text-base">
+                  Date
+                </h2>
+                <h2 className="font-bold text-black text-[0.7rem] md:text-base">
+                  Time
+                </h2>
 
-                <h2 className="font-bold text-black text-[0.7rem]">
+                <h2 className="font-bold text-black text-[0.7rem] md:text-base">
                   Attendance
                 </h2>
               </div>
