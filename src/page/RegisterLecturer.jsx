@@ -5,6 +5,7 @@ import Logo from "/trackAS.png";
 import registerImg from "/registerImg.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Footer from "../component/Footer";
 
 const RegisterLecturer = () => {
   const [fullName, setFullName] = useState("");
@@ -63,7 +64,7 @@ const RegisterLecturer = () => {
   };
 
   return (
-    <section>
+    <section className="min-h-[100vh]">
       <div className="grid md:grid-cols-2">
         <form
           onSubmit={handleRegister}
@@ -145,6 +146,7 @@ const RegisterLecturer = () => {
           />
         </div>
       </div>
+      <Footer/>
     </section>
   );
 };
