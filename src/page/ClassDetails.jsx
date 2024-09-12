@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import LogoutButton from "../component/LogoutButton";
 import useUserDetails from "../hooks/useUserDetails";
 import logo from "../../public/trackAS.png";
+import Footer from "../component/Footer";
 
 const ClassDetails = () => {
   const { userDetails } = useUserDetails();
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col max-w-7xl mx-auto">
       <div className="flex ml-auto pt-8 pr-8">
         <LogoutButton />
       </div>
@@ -34,6 +35,7 @@ const ClassDetails = () => {
           </Link>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

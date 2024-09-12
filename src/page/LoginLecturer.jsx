@@ -7,6 +7,7 @@ import Input from "../component/Input";
 import { Link } from "react-router-dom";
 import Spinner from "../component/Spinner";
 import toast from "react-hot-toast";
+import Footer from "../component/Footer";
 
 const LoginLecturer = () => {
   const navigate = useNavigate();
@@ -103,6 +104,7 @@ const LoginLecturer = () => {
       </div>
 
       {/* End of  Side Image (only shown on Large screen) */}
+      <Footer/>
     </section>
   );
 };

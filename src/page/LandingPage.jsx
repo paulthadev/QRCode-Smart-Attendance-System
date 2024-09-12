@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import logo from "../../public/trackAS.png";
+import Footer from "../component/Footer";
 
 const LandingPage = () => {
   return (
+    <>
     <section className="h-[100vh] w-full grid place-items-center px-6 ">
       <div>
         <div className="items-center flex self-center justify-center">
@@ -22,7 +24,9 @@ const LandingPage = () => {
           </Link>
         </div>
       </div>
-    </section>
+      </section>
+      <Footer/>
+    </>
   );
 };
 
