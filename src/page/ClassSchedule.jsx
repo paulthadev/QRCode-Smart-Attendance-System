@@ -119,13 +119,15 @@ const ClassSchedule = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row max-h-[100vh]  bg-gray-100 ">
-        <div className="w-full md:w-1/2 p-4 md:p-4 flex items-start justify-center relative">
-          <Link to="/classDetails">
-            <button className="btn btn-sm rounded-full bg-blue-500 border-none text-white">
-              Back
-            </button>
-          </Link>
+      <div className="flex flex-col  md:flex-row max-h-[100vh]  bg-gray-100 ">
+        <div className="w-full md:w-1/2 p-4 md:p-4 flex flex-col justify-center relative">
+          <div>
+            <Link to="/classDetails">
+              <button className="btn btn-sm rounded-full bg-blue-500 border-none text-white">
+                Back
+              </button>
+            </Link>
+          </div>
 
           <div className="w-full max-w-2xl h-[90vh] overflow-y-auto">
             <div className="items-center flex self-center justify-center">
@@ -226,7 +228,7 @@ const ClassSchedule = () => {
           />
         )}
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };
