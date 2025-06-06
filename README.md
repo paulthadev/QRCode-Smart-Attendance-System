@@ -1,8 +1,30 @@
 # TrackAS: Smart Attendance System
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
 ## Project Description
 
-RrackAS is a smart attendance system built using React and Vite. It leverages QR codes and geolocation to enable lecturers to efficiently take attendance in classes and manage schedules, while providing a straightforward attendance process for students.
+TrackAS is a smart attendance system built using React and Vite. It leverages QR codes and geolocation to enable lecturers to efficiently take attendance in classes and manage schedules, while providing a straightforward attendance process for students.
+
+### 🌟 Key Features
+
+- 📱 QR Code-based attendance marking
+- 📍 Geolocation verification
+- 👨‍🏫 Lecturer dashboard
+- 📊 Attendance analytics
+- 📤 Export functionality
+- 🔒 Secure authentication
+
+### 🎯 Use Cases
+
+- University lecture attendance
+- Workshop participation tracking
+- Conference attendance management
+- Corporate training sessions
 
 ## Features
 
@@ -137,7 +159,22 @@ trackAS/
 
 ## Contributing
 
-(Add contributing guidelines here if applicable)
+We welcome contributions to TrackAS! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting any contributions.
+
+### How to Contribute
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Development Setup
+
+1. Install dependencies: `npm install`
+2. Start development server: `npm run dev`
+3. Run tests: `npm test`
+4. Build for production: `npm run build`
 
 ## License
 
