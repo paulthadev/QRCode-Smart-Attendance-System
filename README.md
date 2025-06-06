@@ -1,8 +1,8 @@
-# trackAS: Smart Attendance System
+# TrackAS: Smart Attendance System
 
 ## Project Description
 
-trackAS is a smart attendance system built using React and Vite. It leverages QR codes and geolocation to enable lecturers to efficiently take attendance in classes and manage schedules, while providing a straightforward attendance process for students.
+RrackAS is a smart attendance system built using React and Vite. It leverages QR codes and geolocation to enable lecturers to efficiently take attendance in classes and manage schedules, while providing a straightforward attendance process for students.
 
 ## Features
 
